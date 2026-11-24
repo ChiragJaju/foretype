@@ -57,10 +57,11 @@ The tiers nest:
 A length is counted in code lines from the declaration to its closing bracket;
 blank and comment-only lines do not count. The checks that judge a branch
 compare with `VERIFY_BASE` (set by `--changed`) or the merge base with
-`origin/main`, and read waivers from the branch's commit messages and, in CI,
-the PR body ([CONTRIBUTING.md](../../CONTRIBUTING.md) § Waivers). A check whose
-linter is missing locally says so and skips that part; CI's Lint job lints
-every file.
+`origin/main`; in CI `VERIFY_BASE` is the PR's base or the commit main had
+before the push, and a check with no base fails. They read waivers from the
+branch's commit messages and, in CI, the PR body
+([CONTRIBUTING.md](../../CONTRIBUTING.md) § Waivers). A check whose linter is
+missing locally says so and skips that part; CI's Lint job lints every file.
 
 Periphery (dead Swift code) is not wired in: it needs a full Xcode index, so it
 would only fit a manual or nightly run.

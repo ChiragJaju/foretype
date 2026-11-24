@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { changedFiles, resolveBase } from './lib/changed-lines.mjs'
+import { changedFiles, reportNoBase, resolveBase } from './lib/changed-lines.mjs'
 import { finding, isEntry, report } from './lib/findings.mjs'
 import { readWaiverSources, selectWaivers } from './lib/pr-waivers.mjs'
 
@@ -38,7 +38,7 @@ export function findCurrencyProblems(rules, changed, waived) {
 
 function main() {
   const base = resolveBase(ROOT)
-  if (!base) return report('check-doc-currency', [], 'no origin/main to compare with; nothing judged')
+  if (!base) return reportNoBase('check-doc-currency')
   const { rules } = JSON.parse(readFileSync(path.join(ROOT, MAP_FILE), 'utf8'))
   const changed = changedFiles(ROOT, base, { deleted: true })
   const { waived, notices } = selectWaivers('DOC-SKIP', readWaiverSources(ROOT, base))

@@ -96,11 +96,16 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: npx --no-install commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
 
-      # The waiver reader counts a waiver only when the PR body and a commit message both carry it.
+      # The waiver reader counts a waiver only when the PR body and a commit message both carry it. The base
+      # is the PR's base, or on a push the commit main had before it; a push that creates the branch has none.
       - name: Repo checks
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
-        run: node scripts/verify.mjs --tier repo
+          VERIFY_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          NO_COMMIT_SHA: '0000000000000000000000000000000000000000'
+        run: |
+          if [ "$VERIFY_BASE" = "$NO_COMMIT_SHA" ]; then VERIFY_BASE="$(git rev-parse HEAD~1)"; fi
+          node scripts/verify.mjs --tier repo
 
   site-lint:
     name: Site lint

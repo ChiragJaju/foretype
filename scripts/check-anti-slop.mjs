@@ -6,7 +6,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { addedLines, changedFiles, resolveBase } from './lib/changed-lines.mjs'
+import { addedLines, changedFiles, reportNoBase, resolveBase } from './lib/changed-lines.mjs'
 import { finding, isEntry, report } from './lib/findings.mjs'
 import { readTools } from './lib/guidelines.mjs'
 
@@ -104,7 +104,7 @@ function oxlintFindings(files, toolRules) {
 
 function main() {
   const base = resolveBase(ROOT)
-  if (!base) return report('check-anti-slop', [], 'no origin/main to compare with; nothing judged')
+  if (!base) return reportNoBase('check-anti-slop')
   const files = changedFiles(ROOT, base).filter((file) => CODE_FILE.test(file) && !OWN_FILES.has(file))
   const added = addedLines(ROOT, base, files)
   const textProblems = files.flatMap((file) => {

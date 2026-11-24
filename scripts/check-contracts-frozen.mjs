@@ -4,7 +4,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { changedFiles, resolveBase } from './lib/changed-lines.mjs'
+import { changedFiles, reportNoBase, resolveBase } from './lib/changed-lines.mjs'
 import { finding, isEntry, report } from './lib/findings.mjs'
 import { readReasonTags, readWaiverSources, selectWaivers } from './lib/pr-waivers.mjs'
 
@@ -30,7 +30,7 @@ export function findContractProblems(changed, reasons) {
 
 function main() {
   const base = resolveBase(ROOT)
-  if (!base) return report('check-contracts-frozen', [], 'no origin/main to compare with; nothing judged')
+  if (!base) return reportNoBase('check-contracts-frozen')
   const changed = changedFiles(ROOT, base, { deleted: true })
   const { waived, notices } = selectWaivers('CONTRACT-CHANGE', readWaiverSources(ROOT, base), readReasonTags)
   for (const notice of notices) console.log(`check-contracts-frozen: ${notice}`)

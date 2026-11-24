@@ -1,8 +1,10 @@
 // What a branch changed against its base: the base commit, the changed files and the lines each one adds.
-// The base is VERIFY_BASE (set by verify.mjs --changed), else the merge base with origin/main.
+// The base is VERIFY_BASE (set by verify.mjs --changed, and always by CI), else locally the merge base with origin/main.
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
+
+import { report } from './findings.mjs'
 
 const BASE_BRANCH = 'origin/main'
 const GIT_MAX_BUFFER_BYTES = 64 << 20
@@ -13,14 +15,25 @@ function git(root, ...args) {
 
 const splitLines = (text) => text.split('\n').filter(Boolean)
 
-/** The base commit to compare with, or null when there is none (no origin/main in this clone). */
+/**
+ * The base commit to compare with, or null when there is none. CI gets no merge-base fallback: on a push to main,
+ * origin/main is HEAD, so the fallback would judge an empty diff.
+ */
 export function resolveBase(root, env = process.env) {
   if (env.VERIFY_BASE) return env.VERIFY_BASE
+  if (env.CI) return null
   try {
     return git(root, 'merge-base', BASE_BRANCH, 'HEAD').trim()
   } catch {
     return null
   }
+}
+
+/** The exit code for a check with no base: a failure in CI, where judging nothing would pass unseen, else a notice. */
+export function reportNoBase(check, env = process.env) {
+  if (!env.CI) return report(check, [], `no ${BASE_BRANCH} to compare with; nothing judged`)
+  console.error(`${check}: CI must set VERIFY_BASE to the commit to compare with (.github/workflows/ci.yml)`)
+  return 1
 }
 
 /**
