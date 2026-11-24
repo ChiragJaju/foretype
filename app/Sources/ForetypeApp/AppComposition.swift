@@ -1,9 +1,9 @@
 // Slice D. The composition root: the only place concrete adapters are constructed and wired.
 
-import Foundation
 import ForetypeCore
 import ForetypeEngine
 import ForetypeMac
+import Foundation
 
 @MainActor
 enum AppComposition {

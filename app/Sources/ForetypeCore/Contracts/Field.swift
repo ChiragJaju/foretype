@@ -109,7 +109,9 @@ public struct FocusedField: Sendable, Hashable {
     public var host: TextHost
     public var frame: AXRect?
 
-    public init(id: FieldID, app: AppIdentity, role: FieldRole, isSecure: Bool, isEditable: Bool, host: TextHost, frame: AXRect?) {
+    public init(
+        id: FieldID, app: AppIdentity, role: FieldRole, isSecure: Bool, isEditable: Bool, host: TextHost, frame: AXRect?
+    ) {
         self.id = id
         self.app = app
         self.role = role
@@ -154,7 +156,10 @@ public struct FieldSnapshot: Sendable, Hashable {
     public var valueLengthUTF16: Int
     public var caret: CaretGeometry
 
-    public init(fieldID: FieldID, textBeforeCaret: String, textAfterCaret: String, selection: TextRange, valueLengthUTF16: Int, caret: CaretGeometry) {
+    public init(
+        fieldID: FieldID, textBeforeCaret: String, textAfterCaret: String, selection: TextRange, valueLengthUTF16: Int,
+        caret: CaretGeometry
+    ) {
         self.fieldID = fieldID
         self.textBeforeCaret = textBeforeCaret
         self.textAfterCaret = textAfterCaret

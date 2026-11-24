@@ -101,7 +101,10 @@ public struct CompletionTimings: Sendable, Hashable {
     public var generatedTokens: Int
     public var reusedPrefixTokens: Int
 
-    public init(prefixEval: Duration, firstToken: Duration?, firstVisibleWord: Duration?, total: Duration, generatedTokens: Int, reusedPrefixTokens: Int) {
+    public init(
+        prefixEval: Duration, firstToken: Duration?, firstVisibleWord: Duration?, total: Duration, generatedTokens: Int,
+        reusedPrefixTokens: Int
+    ) {
         self.prefixEval = prefixEval
         self.firstToken = firstToken
         self.firstVisibleWord = firstVisibleWord
@@ -110,7 +113,9 @@ public struct CompletionTimings: Sendable, Hashable {
         self.reusedPrefixTokens = reusedPrefixTokens
     }
 
-    public static let zero = CompletionTimings(prefixEval: .zero, firstToken: nil, firstVisibleWord: nil, total: .zero, generatedTokens: 0, reusedPrefixTokens: 0)
+    public static let zero = CompletionTimings(
+        prefixEval: .zero, firstToken: nil, firstVisibleWord: nil, total: .zero, generatedTokens: 0,
+        reusedPrefixTokens: 0)
 }
 
 public struct Completion: Sendable, Hashable {
@@ -148,7 +153,8 @@ public protocol Engine: Sendable {
     func prepare(_ prompt: PreparedPrompt) async throws(EngineError)
     /// Drafts a continuation of `request.typed`. `onPartial` receives the visible text so far after each
     /// token, on the engine's executor; it must return quickly.
-    func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void) async throws(EngineError) -> Completion
+    func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void)
+        async throws(EngineError) -> Completion
     /// Forgets everything the model saw for the current field (clears the KV cache).
     func blur() async
 }

@@ -1,8 +1,8 @@
 // Slice B. This file holds the only network call in Foretype (the privacy gate enforces it).
 // The public signatures are frozen.
 
-import Foundation
 import ForetypeCore
+import Foundation
 
 /// Downloads pinned models after consent into `directory`, resuming partial files, and verifies
 /// size and SHA-256 before moving them into place.

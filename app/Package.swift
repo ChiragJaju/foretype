@@ -12,7 +12,7 @@ let executableLinkerSettings: [LinkerSetting] = [
     .unsafeFlags([
         "-Xlinker", "-rpath", "-Xlinker", "@executable_path",
         "-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks",
-    ]),
+    ])
 ]
 
 let package = Package(
@@ -60,10 +60,19 @@ let package = Package(
             linkerSettings: executableLinkerSettings
         ),
 
-        .testTarget(name: "ForetypeCoreTests", dependencies: ["ForetypeCore", "ForetypeTestSupport"], swiftSettings: swiftSettings),
-        .testTarget(name: "ForetypeTestSupportTests", dependencies: ["ForetypeTestSupport"], swiftSettings: swiftSettings),
-        .testTarget(name: "ForetypeEngineTests", dependencies: ["ForetypeEngine", "ForetypeTestSupport"], swiftSettings: swiftSettings),
-        .testTarget(name: "ForetypeMacTests", dependencies: ["ForetypeMac", "ForetypeTestSupport"], swiftSettings: swiftSettings),
-        .testTarget(name: "ForetypeAppTests", dependencies: ["ForetypeApp", "ForetypeTestSupport"], swiftSettings: swiftSettings),
+        .testTarget(
+            name: "ForetypeCoreTests", dependencies: ["ForetypeCore", "ForetypeTestSupport"],
+            swiftSettings: swiftSettings),
+        .testTarget(
+            name: "ForetypeTestSupportTests", dependencies: ["ForetypeTestSupport"], swiftSettings: swiftSettings),
+        .testTarget(
+            name: "ForetypeEngineTests", dependencies: ["ForetypeEngine", "ForetypeTestSupport"],
+            swiftSettings: swiftSettings),
+        .testTarget(
+            name: "ForetypeMacTests", dependencies: ["ForetypeMac", "ForetypeTestSupport"], swiftSettings: swiftSettings
+        ),
+        .testTarget(
+            name: "ForetypeAppTests", dependencies: ["ForetypeApp", "ForetypeTestSupport"], swiftSettings: swiftSettings
+        ),
     ]
 )

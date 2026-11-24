@@ -1,6 +1,7 @@
 import Foundation
-@testable import ForetypeMac
 import Testing
+
+@testable import ForetypeMac
 
 @AXActor
 private func currentThreadName() -> String? {

@@ -5,7 +5,9 @@
 public enum Ranker {
     /// Best first. `completion` is the engine's visible continuation, nil while none is ready.
     /// Placeholder: no candidates.
-    public static func rank(completion: String?, engine: EngineKind, snippets: [Snippet], kind: FieldKind?, typedBeforeCaret: String) -> [Suggestion] {
+    public static func rank(
+        completion: String?, engine: EngineKind, snippets: [Snippet], kind: FieldKind?, typedBeforeCaret: String
+    ) -> [Suggestion] {
         []
     }
 }

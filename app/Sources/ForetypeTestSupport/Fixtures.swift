@@ -12,11 +12,15 @@ public enum Fixtures {
         host: TextHost = .appKit,
         frame: AXRect? = AXRect(x: 100, y: 100, width: 400, height: 200)
     ) -> FocusedField {
-        FocusedField(id: FieldID(rawValue: id, pid: app.pid), app: app, role: role, isSecure: isSecure, isEditable: true, host: host, frame: frame)
+        FocusedField(
+            id: FieldID(rawValue: id, pid: app.pid), app: app, role: role, isSecure: isSecure, isEditable: true,
+            host: host, frame: frame)
     }
 
     /// A snapshot with the caret at the end of `textBeforeCaret` and an exact caret rect.
-    public static func snapshot(of field: FocusedField, textBeforeCaret: String, textAfterCaret: String = "") -> FieldSnapshot {
+    public static func snapshot(of field: FocusedField, textBeforeCaret: String, textAfterCaret: String = "")
+        -> FieldSnapshot
+    {
         let caretLocation = textBeforeCaret.utf16.count
         return FieldSnapshot(
             fieldID: field.id,

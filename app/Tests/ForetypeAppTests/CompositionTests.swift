@@ -1,5 +1,6 @@
-@testable import ForetypeApp
 import Testing
+
+@testable import ForetypeApp
 
 @Suite("App smoke")
 @MainActor

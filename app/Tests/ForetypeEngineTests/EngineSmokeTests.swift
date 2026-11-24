@@ -1,5 +1,6 @@
-@testable import ForetypeEngine
 import Testing
+
+@testable import ForetypeEngine
 
 @Suite("Engine smoke")
 struct EngineSmokeTests {

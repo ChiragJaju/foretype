@@ -62,10 +62,13 @@ public actor FakeEngine: Engine {
         preparedFieldID = prompt.fieldID
     }
 
-    public func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void) async throws(EngineError) -> Completion {
+    public func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void)
+        async throws(EngineError) -> Completion
+    {
         guard preparedFieldID == request.fieldID else { throw .notPrepared }
         requests.append(request)
-        let continuation = replies.first { $0.hasPrefix(request.typed) }.map { String($0.dropFirst(request.typed.count)) } ?? ""
+        let continuation =
+            replies.first { $0.hasPrefix(request.typed) }.map { String($0.dropFirst(request.typed.count)) } ?? ""
         var visible = ""
         for word in Self.words(continuation) {
             do {

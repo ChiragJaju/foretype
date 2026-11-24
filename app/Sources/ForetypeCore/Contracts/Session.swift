@@ -28,7 +28,10 @@ public struct ActiveField: Sendable, Hashable {
     /// The newest completion request; results for any other ID are stale and dropped.
     public var pendingRequest: RequestID?
 
-    public init(field: FocusedField, kind: FieldKind? = nil, context: CapturedContext? = nil, snapshot: FieldSnapshot? = nil, isEnginePrepared: Bool = false, pendingRequest: RequestID? = nil) {
+    public init(
+        field: FocusedField, kind: FieldKind? = nil, context: CapturedContext? = nil, snapshot: FieldSnapshot? = nil,
+        isEnginePrepared: Bool = false, pendingRequest: RequestID? = nil
+    ) {
         self.field = field
         self.kind = kind
         self.context = context
@@ -172,7 +175,10 @@ public struct RunnerStatus: Sendable, Hashable {
     /// "Show me what you read": the focused field's context only, nil after blur.
     public var inspectedContext: CapturedContext?
 
-    public init(isRunning: Bool, inactiveReason: DenyReason?, engine: EngineDescriptor, engineStatus: EngineStatus, focusedApp: AppIdentity?, fieldDecision: PolicyDecision?, inspectedContext: CapturedContext?) {
+    public init(
+        isRunning: Bool, inactiveReason: DenyReason?, engine: EngineDescriptor, engineStatus: EngineStatus,
+        focusedApp: AppIdentity?, fieldDecision: PolicyDecision?, inspectedContext: CapturedContext?
+    ) {
         self.isRunning = isRunning
         self.inactiveReason = inactiveReason
         self.engine = engine
@@ -183,6 +189,8 @@ public struct RunnerStatus: Sendable, Hashable {
     }
 
     public static func stopped(engine: EngineDescriptor) -> RunnerStatus {
-        RunnerStatus(isRunning: false, inactiveReason: nil, engine: engine, engineStatus: .unloaded, focusedApp: nil, fieldDecision: nil, inspectedContext: nil)
+        RunnerStatus(
+            isRunning: false, inactiveReason: nil, engine: engine, engineStatus: .unloaded, focusedApp: nil,
+            fieldDecision: nil, inspectedContext: nil)
     }
 }
