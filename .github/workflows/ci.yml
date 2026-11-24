@@ -25,8 +25,9 @@ jobs:
       app: ${{ steps.paths.outputs.app }}
       site: ${{ steps.paths.outputs.site }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
+          persist-credentials: false
           fetch-depth: 2
 
       # On a PR, HEAD is the merge commit and HEAD^1 the base, so the diff is exactly the PR.
@@ -46,11 +47,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
+          persist-credentials: false
           fetch-depth: 0
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -68,6 +70,22 @@ jobs:
           tar -xzf "$archive" -C "$RUNNER_TEMP" gitleaks
           echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
 
+      # shellcheck ships on the runner image; agnix comes from the root devDependencies.
+      - name: Install repo linters
+        env:
+          ACTIONLINT_VERSION: 1.7.12
+          ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+          TYPOS_VERSION: 1.52.2
+          ZIZMOR_VERSION: 1.33.1
+        run: |
+          archive="$RUNNER_TEMP/actionlint.tar.gz"
+          curl -sSfL -o "$archive" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          echo "$ACTIONLINT_SHA256  $archive" | sha256sum -c -
+          tar -xzf "$archive" -C "$RUNNER_TEMP" actionlint
+          pipx install "typos==${TYPOS_VERSION}"
+          pipx install "zizmor==${ZIZMOR_VERSION}"
+          shellcheck --version
+
       - name: Secret scan
         run: gitleaks git --redact --no-banner .
 
@@ -78,7 +96,10 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: npx --no-install commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
 
+      # The waiver reader counts a waiver only when the PR body and a commit message both carry it.
       - name: Repo checks
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: node scripts/verify.mjs --tier repo
 
   site-lint:
@@ -88,9 +109,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -106,6 +129,10 @@ jobs:
         working-directory: site
         run: npm run lint
 
+      - name: knip
+        working-directory: site
+        run: npx --no-install knip
+
       - name: oxfmt
         run: npx --no-install oxfmt --check site/src scripts
 
@@ -119,12 +146,13 @@ jobs:
       run:
         working-directory: site
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
+          persist-credentials: false
           # activity.mjs reads the git history.
           fetch-depth: 0
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -137,6 +165,31 @@ jobs:
           node ../scripts/activity.mjs
           npm run build
 
+  site-test:
+    name: Site unit tests
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - run: npm ci
+
+      - name: vitest
+        run: npm test
+
   # One macOS job: free macOS runners are scarce, so lint, build and test share one runner and cache.
   app:
     name: App lint, build and test
@@ -145,9 +198,11 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: app/.build
           key: spm-${{ runner.os }}-${{ hashFiles('app/Package.swift', 'app/Package.resolved') }}
@@ -209,7 +264,7 @@ jobs:
   unit-tests:
     name: Unit tests
     if: always()
-    needs: [changes, app]
+    needs: [changes, site-test, app]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
