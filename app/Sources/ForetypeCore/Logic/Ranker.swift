@@ -1,4 +1,4 @@
-// Slice A. The public signatures below are frozen (app/CONTRACTS.md); the bodies are yours.
+// Slice A. The public signatures below are frozen (docs/guides/contracts.md); the bodies are yours.
 
 /// Merges snippet prefix matches with the model's completion. Snippets rank first when the field
 /// kind fits them or the typed prefix matches one, by pure prefix match.

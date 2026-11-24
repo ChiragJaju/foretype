@@ -1,6 +1,6 @@
 # Foretype architecture
 
-How the app is put together, for anyone reading or changing the code. The plan and the reasons behind it are in [PLAN.md](PLAN.md). The exact file ownership for the first build round is in [app/CONTRACTS.md](../app/CONTRACTS.md).
+How the app is put together, for anyone reading or changing the code. The plan and the reasons behind it are in [PLAN.md](PLAN.md). The exact file ownership for the first build round is in [guides/contracts.md](guides/contracts.md).
 
 ## Module map
 
@@ -50,7 +50,7 @@ blur ──▶ track(nil), blurEngine (KV cleared), hideGhost, setTapMode(.off),
 
 ## Contracts summary
 
-All in `app/Sources/ForetypeCore/Contracts/` unless noted. Frozen: see [CONTRACTS.md](../app/CONTRACTS.md) for the change process.
+All in `app/Sources/ForetypeCore/Contracts/` unless noted. Frozen: see [guides/contracts.md](guides/contracts.md) for the change process.
 
 | File | Contents |
 |---|---|
@@ -131,7 +131,7 @@ swift build && ./scripts/test.sh      # unit tests, no permissions needed
 
 ## For contributors: who owns what
 
-The first build round splits the work into four slices that never edit the same file. The exact file lists and rules are in [app/CONTRACTS.md](../app/CONTRACTS.md).
+The first build round splits the work into four slices that never edit the same file. The exact file lists and rules are in [guides/contracts.md](guides/contracts.md).
 
 | Slice | Owns | Done means |
 |---|---|---|

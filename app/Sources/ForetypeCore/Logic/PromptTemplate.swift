@@ -1,4 +1,4 @@
-// Slice A. The public signatures below are frozen (app/CONTRACTS.md); the bodies are yours.
+// Slice A. The public signatures below are frozen (docs/guides/contracts.md); the bodies are yours.
 
 /// The base-style continuation prompt the P0 spike chose: few-shot "Screen ... My reply:" blocks,
 /// no chat template. Few-shot examples are fixed so their KV prefix is shared across fields.

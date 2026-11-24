@@ -159,6 +159,8 @@ No. iOS has no way to draw over the system keyboard, and Android needs a keyboar
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). Report security issues as described in [SECURITY.md](SECURITY.md).
 
+Coding agents (Claude Code, Codex, Cursor) start at [AGENTS.md](AGENTS.md): it lists the non-negotiables, where each rule lives, and the skills. How the app is built is in [docs/architecture.md](docs/architecture.md).
+
 ## License
 
 [MIT](LICENSE). Website: <https://foretype.vercel.app>

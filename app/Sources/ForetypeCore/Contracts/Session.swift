@@ -1,4 +1,4 @@
-// FROZEN CONTRACT. Owned by the orchestrator. See app/CONTRACTS.md before changing anything here.
+// FROZEN CONTRACT. Owned by the orchestrator. See docs/guides/contracts.md before changing anything here.
 //
 // The suggestion session is a pure reducer: `SuggestionSession.handle(_:now:)` takes one
 // `SessionEvent` and returns the `SessionEffect`s to run. It performs no I/O and never awaits, so

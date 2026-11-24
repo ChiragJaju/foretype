@@ -1,0 +1,63 @@
+{
+  "$comment": "Rules an outside tool enforces: tool -> where it runs -> tool rule -> rule ids. The generator lists them in enforcement.md (docs/guides/guidelines.md).",
+  "swiftlint": {
+    "runsIn": "Lint: `swiftlint --strict` with `.swiftlint.yml`; the PostToolUse hook on each edited Swift file",
+    "rules": {
+      "file_length": ["CODE-18"],
+      "function_body_length": ["CODE-20"],
+      "type_body_length": ["CODE-21"],
+      "cyclomatic_complexity": ["CODE-11"],
+      "todo": ["CODE-15"],
+      "force_unwrapping": ["SWIFT-1"],
+      "force_try": ["SWIFT-1"],
+      "force_cast": ["SWIFT-1"],
+      "implicitly_unwrapped_optional": ["SWIFT-1"],
+      "fatal_error_message": ["SWIFT-4"],
+      "no_print": ["OBS-1"],
+      "no_pasteboard": ["PRIV-2"]
+    }
+  },
+  "swift-format": {
+    "runsIn": "Lint: `swift format lint --strict` with `.swift-format`; the PostToolUse hook formats each edited Swift file",
+    "rules": {
+      "FileScopedDeclarationPrivacy": ["SWIFT-7"],
+      "AlwaysUseLowerCamelCase": ["SWIFT-8"],
+      "TypeNamesShouldBeCapitalized": ["SWIFT-8"],
+      "format": ["SWIFT-9"]
+    }
+  },
+  "swiftc": {
+    "runsIn": "Type-check and Unit tests: `swift build` with the settings in `app/Package.swift`",
+    "rules": {
+      "Swift 6 language mode": ["CONC-1"],
+      "ExistentialAny": ["SWIFT-6"],
+      "target dependencies": ["MOD-2"]
+    }
+  },
+  "privacy-check": {
+    "runsIn": "Repo checks and app CI: `app/scripts/privacy-check.sh`",
+    "rules": {
+      "network API outside ModelStore.swift": ["PRIV-1"],
+      "clipboard API": ["PRIV-2"]
+    }
+  },
+  "tsc": {
+    "runsIn": "Type-check: `npm run build` in `site/` (`tsc -b`)",
+    "rules": {
+      "strict": ["CODE-9"],
+      "noUnusedLocals": ["CODE-4"]
+    }
+  },
+  "commitlint": {
+    "runsIn": "the commit-msg hook and CI, with the scope list in `CONTRIBUTING.md`",
+    "rules": {
+      "type-enum, scope-enum": ["AGENTS-9"]
+    }
+  },
+  "gitleaks": {
+    "runsIn": "the pre-commit hook and CI, over the tree and every PR commit",
+    "rules": {
+      "default rules": ["SEC-8"]
+    }
+  }
+}

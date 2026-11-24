@@ -1,4 +1,4 @@
-// FROZEN CONTRACT. Owned by the orchestrator. See app/CONTRACTS.md before changing anything here.
+// FROZEN CONTRACT. Owned by the orchestrator. See docs/guides/contracts.md before changing anything here.
 
 /// A rectangle in Accessibility coordinates: global, top-left origin, measured from the top-left
 /// of the menu-bar screen (`NSScreen.screens[0]`), in points. AppKit converts it with

@@ -39,7 +39,7 @@ file_length:
   warning: 300
   error: 300
   ignore_comment_only_lines: true
-# Frozen public names (app/CONTRACTS.md): AXRect.x/y, secureInputHeld(by:), the catalog entry.
+# Frozen public names (docs/guides/contracts.md): AXRect.x/y, secureInputHeld(by:), the catalog entry.
 identifier_name:
   excluded: [id, x, y, by, qwen25Instruct1_5B]
 cyclomatic_complexity:

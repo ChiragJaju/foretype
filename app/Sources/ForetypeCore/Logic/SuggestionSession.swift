@@ -1,4 +1,4 @@
-// Slice A. The public signatures below are frozen (app/CONTRACTS.md); the bodies are yours.
+// Slice A. The public signatures below are frozen (docs/guides/contracts.md); the bodies are yours.
 
 import Foundation
 

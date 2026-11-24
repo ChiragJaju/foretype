@@ -25,6 +25,7 @@ targets:
     platform: macOS
     sources:
       - path: ../Sources/ForetypeApp
+        excludes: [AGENTS.md, CLAUDE.md]
     dependencies:
       - package: Foretype
         product: ForetypeCore
