@@ -28,7 +28,7 @@ is big" is not a reason for a new home; changing a convention is its own PR.
 `public` declarations, exports, types, files. Every `public` Swift declaration
 and every TypeScript export has a user outside its own file.
 
-**CODE-5. A helper used by one file MUST live in that file**, `private` in Swift.
+**CODE-5. A helper used by one file MUST live in that file, `private` in Swift.**
 A new `*Utils` or `*Helpers` file needs a second user.
 
 **CODE-6. A parameter every caller passes the same value for MUST NOT be a
@@ -84,8 +84,8 @@ SwiftPM dependency needs the maintainer's yes before it lands.** Ask in the
 issue or PR first. The site's icon library is `lucide-react` (UI-1).
 
 **CODE-17. No code is copied from a project whose license is incompatible with
-MIT**, such as AGPL or GPL projects (for example Cotabby). Read ideas, write your
-own.
+MIT.** That includes AGPL and GPL projects such as Cotabby: read ideas, write
+your own.
 
 ## 5. Size budgets
 
@@ -94,8 +94,8 @@ commit), never by splitting to dodge the count, deleting cases or editing the
 number. A PR that must break one says so with `BUDGET-SKIP(<rule-id>): <reason>`
 (`CONTRIBUTING.md` § Waivers).
 
-**CODE-18. A Swift or `.ts` file is at most 300 code lines.** Comment-only and
-blank lines do not count.
+**CODE-18. A Swift or `.ts` file is at most 300 lines.** Comment-only lines do
+not count.
 
 **CODE-19. A `.tsx` file is at most 600 code lines.**
 
@@ -126,4 +126,4 @@ reason; a pre-existing failure that blocks you is named in the PR, not worked
 around.
 
 **CODE-26. Your own diff MUST be swept for unused code, dead imports and stale
-docs** before review, and anything the change made dead is deleted in it.
+docs before review.** Anything the change made dead is deleted in it.

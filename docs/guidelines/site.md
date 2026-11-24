@@ -16,11 +16,11 @@ privacy claim matches [privacy.md](./privacy.md).
 comes from its own origin (`/activity.json`, `/milestones.json`); the only
 outside request is the Google Fonts stylesheet.
 
-**SITE-3. Long-form copy SHOULD live in `site/src/lib/content.ts`**, not inline
-in components.
+**SITE-3. Long-form copy SHOULD live in `site/src/lib/content.ts`, not inline in
+components.**
 
-**SITE-4. Colors come from the theme tokens in `site/src/index.css`**, which
-switch on `data-theme`. A component SHOULD NOT hardcode a color.
+**SITE-4. Colors come from the theme tokens in `site/src/index.css`.** They
+switch on `data-theme`; a component SHOULD NOT hardcode a color.
 
 **SITE-5. Motion respects `prefers-reduced-motion: reduce`.** Every animation,
 smooth scroll and 3D scene checks it and settles to a still state.

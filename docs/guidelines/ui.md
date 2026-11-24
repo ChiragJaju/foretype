@@ -12,7 +12,7 @@ a **MUST**.
 template image drawn in code from the lucide path (no SF Symbols, no SwiftPM
 resources).
 
-**UI-2. No emoji in product UI**, in the app or on the site.
+**UI-2. No emoji in product UI, in the app or on the site.**
 
 **UI-3. Every surface works in light and dark.** The app uses system semantic
 colors (`labelColor`, `secondaryLabelColor`, materials) so it follows the
