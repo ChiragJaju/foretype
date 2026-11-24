@@ -27,16 +27,16 @@ linter runs only when a file of its kind changed.
 | --- | --- | --- |
 | pre-commit (`.githooks/pre-commit`) | about 2 s, staged files only | the 1 MB limit, gitleaks; swift-format and SwiftLint on staged Swift; oxfmt on staged site and script files, oxlint (no type information) on staged site files; shellcheck on staged `*.sh` and hooks; typos on every staged file; actionlint and zizmor only when a workflow is staged; agnix only when an agent file is staged |
 | pre-push (`.githooks/pre-push`) | about 30 s | `verify.mjs --changed --tier fast`: the repo tier and the lint tier below, on the branch's changes |
-| CI | minutes | Repo checks: `verify.mjs --tier repo` on every file; Lint: SwiftLint, swift-format, oxfmt, `oxlint --type-aware --deny-warnings`, knip; Type-check; Unit tests: the app tests and the site's Vitest suite |
+| CI | minutes | Repo checks: `verify.mjs --tier repo` on every file; Lint: SwiftLint, swift-format, oxfmt on `site/src`, `oxlint --type-aware --deny-warnings`, knip; Type-check; Unit tests: the app tests and the site's Vitest suite |
 
 The tiers nest:
 
 - **repo**: every `scripts/check-*.mjs`, the node tests, and the repo linters
-  shellcheck, typos (`_typos.toml`), actionlint, `zizmor --offline` and
-  `agnix --strict`.
-- **fast**: adds SwiftLint, swift-format, oxfmt, `oxlint --type-aware
-  --deny-warnings` and knip (`site/knip.jsonc`; any site change runs it on the
-  whole site).
+  shellcheck, typos (`_typos.toml`), actionlint, `zizmor --offline`,
+  `agnix --strict` and oxfmt on `scripts/`.
+- **fast**: adds SwiftLint, swift-format, oxfmt on `site/src`, `oxlint
+  --type-aware --deny-warnings` and knip (`site/knip.jsonc`; any site change
+  runs it on the whole site).
 - **full**: adds `tsc -b`, `swift build`, the app unit tests and the site's
   Vitest suite (`npm test` in `site/`, one worker).
 

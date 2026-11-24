@@ -139,7 +139,7 @@ jobs:
         run: npx --no-install knip
 
       - name: oxfmt
-        run: npx --no-install oxfmt --check site/src scripts
+        run: npx --no-install oxfmt --check site/src
 
   site-build:
     name: Site type-check and build

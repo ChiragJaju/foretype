@@ -13,9 +13,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TIERS = ['repo', 'fast', 'full']
 const BASE_BRANCH = 'origin/main'
 const SWIFT_PATHS = ['app/Sources', 'app/Tests', 'app/E2E', 'app/Package.swift']
-const FORMATTED_PATHS = ['site/src', 'scripts']
 const SWIFT_FILE = /^app\/.*\.swift$/
-const FORMATTED_FILE = /^(site\/src|scripts)\/.*\.(js|mjs|ts|tsx|css|json)$/
+const FORMATTED_SITE_FILE = /^site\/src\/.*\.(js|mjs|ts|tsx|css|json)$/
+const FORMATTED_SCRIPT_FILE = /^scripts\/.*\.(js|mjs|json)$/
 const LINTED_SITE_FILE = /^site\/src\/.*\.(ts|tsx)$/
 const SITE_FILE = /^site\//
 const SHELL_FILE = /\.sh$|^\.githooks\//
@@ -89,6 +89,13 @@ function repoLintSteps(files) {
       files,
       AGENT_FILE,
     ),
+    scoped(
+      'oxfmt scripts',
+      ['npx', '--no-install', 'oxfmt', '--check', 'scripts'],
+      (paths) => ['npx', '--no-install', 'oxfmt', '--check', ...paths],
+      files,
+      FORMATTED_SCRIPT_FILE,
+    ),
   ]
 }
 
@@ -110,11 +117,11 @@ function lintSteps(files) {
       SWIFT_FILE,
     ),
     scoped(
-      'oxfmt',
-      ['npx', '--no-install', 'oxfmt', '--check', ...FORMATTED_PATHS],
+      'oxfmt site',
+      ['npx', '--no-install', 'oxfmt', '--check', 'site/src'],
       (paths) => ['npx', '--no-install', 'oxfmt', '--check', ...paths],
       files,
-      FORMATTED_FILE,
+      FORMATTED_SITE_FILE,
     ),
     {
       ...scoped(
