@@ -23,6 +23,7 @@ let package = Package(
         .library(name: "ForetypeEngine", targets: ["ForetypeEngine"]),
         .library(name: "ForetypeMac", targets: ["ForetypeMac"]),
         .library(name: "ForetypeTestSupport", targets: ["ForetypeTestSupport"]),
+        .executable(name: "Foretype", targets: ["ForetypeApp"]),
         .executable(name: "foretype-eval", targets: ["foretype-eval"]),
     ],
     targets: [
@@ -47,6 +48,12 @@ let package = Package(
         .target(name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], swiftSettings: swiftSettings),
 
         .executableTarget(
+            name: "ForetypeApp",
+            dependencies: ["ForetypeCore", "ForetypeEngine", "ForetypeMac"],
+            swiftSettings: swiftSettings,
+            linkerSettings: executableLinkerSettings
+        ),
+        .executableTarget(
             name: "foretype-eval",
             dependencies: ["ForetypeCore", "ForetypeEngine"],
             swiftSettings: swiftSettings,
@@ -57,5 +64,6 @@ let package = Package(
         .testTarget(name: "ForetypeTestSupportTests", dependencies: ["ForetypeTestSupport"], swiftSettings: swiftSettings),
         .testTarget(name: "ForetypeEngineTests", dependencies: ["ForetypeEngine", "ForetypeTestSupport"], swiftSettings: swiftSettings),
         .testTarget(name: "ForetypeMacTests", dependencies: ["ForetypeMac", "ForetypeTestSupport"], swiftSettings: swiftSettings),
+        .testTarget(name: "ForetypeAppTests", dependencies: ["ForetypeApp", "ForetypeTestSupport"], swiftSettings: swiftSettings),
     ]
 )
