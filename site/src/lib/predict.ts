@@ -14,9 +14,7 @@ export function rank(typed: string, candidates: Candidate[]): Ranked[] {
     return { ...candidate, matches, score: matches ? candidate.prior : 0 }
   })
   const total = scored.reduce((sum, item) => sum + item.score, 0) || 1
-  return scored
-    .map((item) => ({ ...item, score: item.score / total }))
-    .sort((a, b) => b.score - a.score || b.prior - a.prior)
+  return scored.map((item) => ({ ...item, score: item.score / total })).sort((a, b) => b.score - a.score || b.prior - a.prior)
 }
 
 // The ghost text is the unseen remainder of the best match, kept in the user's casing.

@@ -32,7 +32,17 @@ const TYPE_MS_PER_CHAR = 38
 function buildFrames(): Frame[] {
   const reply = REPLY_CANDIDATES[1].text
   const address = ADDRESS_CANDIDATES[1].text
-  const base: Frame = { line1: '', line2: '', active: 0, showGhost: false, highlight: false, pressed: '', note: '', keystrokes: 0, durationMs: 900 }
+  const base: Frame = {
+    line1: '',
+    line2: '',
+    active: 0,
+    showGhost: false,
+    highlight: false,
+    pressed: '',
+    note: '',
+    keystrokes: 0,
+    durationMs: 900,
+  }
   const frames: Frame[] = [
     { ...base, note: 'Waiting for a text field', durationMs: 1000 },
     { ...base, active: 1, highlight: true, note: 'Reads the thread via Accessibility · no screenshots', durationMs: 1300 },
@@ -42,13 +52,49 @@ function buildFrames(): Frame[] {
   ]
   // The lead-in line is typed by hand, so it counts as keystrokes.
   for (let length = 1; length <= ADDRESS_LEAD.length; length += 1) {
-    frames.push({ ...base, active: 2, line1: reply, line2: ADDRESS_LEAD.slice(0, length), keystrokes: 2 + length, note: 'Typing…', durationMs: TYPE_MS_PER_CHAR })
+    frames.push({
+      ...base,
+      active: 2,
+      line1: reply,
+      line2: ADDRESS_LEAD.slice(0, length),
+      keystrokes: 2 + length,
+      note: 'Typing…',
+      durationMs: TYPE_MS_PER_CHAR,
+    })
   }
   const afterLead = 2 + ADDRESS_LEAD.length
   frames.push(
-    { ...base, active: 2, line1: reply, line2: ADDRESS_LEAD, showGhost: true, keystrokes: afterLead, note: 'From your memory · Home', durationMs: 1600 },
-    { ...base, active: 2, line1: reply, line2: `${ADDRESS_LEAD}F`, showGhost: true, pressed: 'F', keystrokes: afterLead + 1, note: 'Re-ranked on “F” → Office', durationMs: 1600 },
-    { ...base, active: 2, line1: reply, line2: `${ADDRESS_LEAD}${address}`, pressed: 'Tab', keystrokes: afterLead + 2, note: 'Accepted · written on your Mac', durationMs: 2600 },
+    {
+      ...base,
+      active: 2,
+      line1: reply,
+      line2: ADDRESS_LEAD,
+      showGhost: true,
+      keystrokes: afterLead,
+      note: 'From your memory · Home',
+      durationMs: 1600,
+    },
+    {
+      ...base,
+      active: 2,
+      line1: reply,
+      line2: `${ADDRESS_LEAD}F`,
+      showGhost: true,
+      pressed: 'F',
+      keystrokes: afterLead + 1,
+      note: 'Re-ranked on “F” → Office',
+      durationMs: 1600,
+    },
+    {
+      ...base,
+      active: 2,
+      line1: reply,
+      line2: `${ADDRESS_LEAD}${address}`,
+      pressed: 'Tab',
+      keystrokes: afterLead + 2,
+      note: 'Accepted · written on your Mac',
+      durationMs: 2600,
+    },
   )
   return frames
 }
@@ -169,7 +215,9 @@ export function HeroDemo() {
             </aside>
             <div className="min-w-0 flex-1 p-4 sm:p-6">
               <div className="mb-1 flex items-center gap-2 text-[13px]">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f4c9a8] text-[12px] font-medium text-[#5a3a22]">M</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f4c9a8] text-[12px] font-medium text-[#5a3a22]">
+                  M
+                </span>
                 <span className="font-medium">Maya Chen</span>
                 <span className="text-ink-3">· 9:41 AM</span>
               </div>

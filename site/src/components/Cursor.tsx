@@ -15,9 +15,7 @@ function modeFor(target: Element | null): { mode: CursorMode; label: string } {
 }
 
 export function Cursor() {
-  const [enabled] = useState(
-    () => matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
+  const [enabled] = useState(() => matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [state, setState] = useState<{ mode: CursorMode; label: string }>({ mode: 'default', label: '' })
   const [pressed, setPressed] = useState(false)
   const x = useMotionValue(OFFSCREEN_PX)

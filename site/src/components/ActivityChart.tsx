@@ -80,7 +80,13 @@ function Tooltip({ day, position }: { day: DailyActivity; position: ColumnPositi
   )
 }
 
-type DayColumnProps = { day: DailyActivity; position: ColumnPosition; topTick: number; active: boolean; onActivate: (index: number) => void }
+type DayColumnProps = {
+  day: DailyActivity
+  position: ColumnPosition
+  topTick: number
+  active: boolean
+  onActivate: (index: number) => void
+}
 
 function DayColumn({ day, position, topTick, active, onActivate }: DayColumnProps) {
   const { index } = position
@@ -192,7 +198,9 @@ function DataTable({ daily }: { daily: DailyActivity[] }) {
               <th className="py-1 pr-3 font-medium">Day</th>
               <th className="py-1 pr-3 font-medium">Total</th>
               {AREAS.map((area) => (
-                <th key={area} className="py-1 pr-3 font-medium">{area}</th>
+                <th key={area} className="py-1 pr-3 font-medium">
+                  {area}
+                </th>
               ))}
             </tr>
           </thead>
@@ -202,7 +210,9 @@ function DataTable({ daily }: { daily: DailyActivity[] }) {
                 <td className="py-1 pr-3 text-ink">{formatDay(day.date)}</td>
                 <td className="py-1 pr-3">{day.commits}</td>
                 {AREAS.map((area) => (
-                  <td key={area} className="py-1 pr-3">{day.byArea[area]}</td>
+                  <td key={area} className="py-1 pr-3">
+                    {day.byArea[area]}
+                  </td>
                 ))}
               </tr>
             ))}

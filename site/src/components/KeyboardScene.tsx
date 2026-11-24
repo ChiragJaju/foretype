@@ -46,7 +46,9 @@ const LETTERS = Object.keys(KEY_POSITIONS)
 function wordCurve(word: string) {
   const points = word.split('').map((letter) => KEY_POSITIONS[letter].clone().setY(TRAIL_HEIGHT))
   // Repeated letters ("good") need a small wiggle so the curve stays well-defined.
-  const spaced = points.map((point, index) => (index > 0 && point.equals(points[index - 1]) ? point.clone().add(new THREE.Vector3(0.18, 0, 0.12)) : point))
+  const spaced = points.map((point, index) =>
+    index > 0 && point.equals(points[index - 1]) ? point.clone().add(new THREE.Vector3(0.18, 0, 0.12)) : point,
+  )
   return new THREE.CatmullRomCurve3(spaced, false, 'centripetal', 0.5)
 }
 
@@ -58,7 +60,11 @@ function Keyboard({ palette, onWord }: { palette: Palette; onWord: (word: string
   const clock = useRef({ word: 0, elapsed: 0, lastReported: -1 })
   const curves = useMemo(() => WORDS.map(wordCurve), [])
   const samples = useMemo(() => curves.map((curve) => curve.getSpacedPoints(PATH_SAMPLES)), [curves])
-  const textures = useMemo(() => Object.fromEntries(LETTERS.map((letter) => [letter, glyphTexture(letter, palette.ink, '"Instrument Sans", system-ui, sans-serif')])), [palette.ink])
+  const textures = useMemo(
+    () =>
+      Object.fromEntries(LETTERS.map((letter) => [letter, glyphTexture(letter, palette.ink, '"Instrument Sans", system-ui, sans-serif')])),
+    [palette.ink],
+  )
   useEffect(() => () => Object.values(textures).forEach((texture) => texture.dispose()), [textures])
 
   useFrame((state, delta) => {
@@ -135,7 +141,17 @@ function Keyboard({ palette, onWord }: { palette: Palette; onWord: (word: string
           </group>
         )
       })}
-      <Line ref={trail} points={[[0, 0, 0], [0, 0, 0]]} color={palette.accent} lineWidth={5} transparent opacity={1} />
+      <Line
+        ref={trail}
+        points={[
+          [0, 0, 0],
+          [0, 0, 0],
+        ]}
+        color={palette.accent}
+        lineWidth={5}
+        transparent
+        opacity={1}
+      />
     </group>
   )
 }
