@@ -1,0 +1,63 @@
+# Strict SwiftLint for app/. Rule ids in messages (OBS-1, PRIV-2) match the project's privacy and
+# observability rules; CI runs `swiftlint --strict`, so every warning fails the build.
+included:
+  - app/Sources
+  - app/Tests
+  - app/E2E
+  - app/Package.swift
+excluded:
+  - app/.build
+
+opt_in_rules:
+  - fatal_error_message
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - empty_count
+  - first_where
+  - contains_over_first_not_nil
+
+# swift-format owns layout; these rules would fight it.
+disabled_rules:
+  - trailing_comma
+  - opening_brace
+  - line_length
+
+force_cast: error
+force_try: error
+force_unwrapping: error
+implicitly_unwrapped_optional: error
+fatal_error_message: error
+todo: error
+
+function_body_length:
+  warning: 50
+  error: 50
+type_body_length:
+  warning: 250
+  error: 250
+file_length:
+  warning: 300
+  error: 300
+  ignore_comment_only_lines: true
+# Frozen public names (app/CONTRACTS.md): AXRect.x/y, secureInputHeld(by:), the catalog entry.
+identifier_name:
+  excluded: [id, x, y, by, qwen25Instruct1_5B]
+cyclomatic_complexity:
+  warning: 12
+  error: 12
+
+custom_rules:
+  no_print:
+    name: No print
+    included: '/app/Sources/'
+    regex: '\b(print|debugPrint|NSLog)\('
+    match_kinds: [identifier]
+    message: 'OBS-1: log through os.Logger with a LogCategory (Contracts/Logging.swift), never print, debugPrint or NSLog.'
+    severity: error
+  no_pasteboard:
+    name: No pasteboard
+    included: '/app/'
+    regex: '\b(NSPasteboard|UIPasteboard)\b'
+    match_kinds: [identifier, typeidentifier]
+    message: 'PRIV-2: Foretype never touches the clipboard; insert through the Inserter seam.'
+    severity: error
