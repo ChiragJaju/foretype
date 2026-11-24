@@ -1,0 +1,26 @@
+{
+  "$comment": "Code paths -> the one living guide that describes them (DOC-3). A change to the code needs that guide in the same diff, or DOC-SKIP(<id>): <reason>. Tests never fire a rule.",
+  "rules": [
+    {
+      "id": "contracts",
+      "paths": ["app/Sources/ForetypeCore/Contracts/**", "app/Sources/ForetypeMac/Threading.swift"],
+      "doc": "docs/guides/contracts.md"
+    },
+    {
+      "id": "architecture",
+      "paths": ["app/Package.swift", "app/scripts/**", "app/Support/**", "app/E2E/project.yml"],
+      "doc": "docs/architecture.md"
+    },
+    {
+      "id": "verify",
+      "paths": ["scripts/verify.mjs", "scripts/check-*.mjs", ".githooks/**", "Makefile", ".github/workflows/ci.yml"],
+      "except": ["scripts/check-guidelines.mjs"],
+      "doc": "docs/guides/verify.md"
+    },
+    {
+      "id": "guidelines",
+      "paths": ["scripts/check-guidelines.mjs", "scripts/generate-guidelines.mjs", "scripts/lib/guidelines.mjs"],
+      "doc": "docs/guides/guidelines.md"
+    }
+  ]
+}
