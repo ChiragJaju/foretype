@@ -47,12 +47,16 @@ export function useTheme() {
       return
     }
     const transition = document.startViewTransition(() => flushSync(() => writeTheme(next)))
-    transition.ready.then(() => {
-      document.documentElement.animate(
-        { clipPath: revealFrames(options) },
-        { duration: THEME_REVEAL_MS, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
-      )
-    })
+    // `ready` rejects when the browser skips the transition; the theme is already written, so only the reveal is lost.
+    transition.ready.then(
+      () => {
+        document.documentElement.animate(
+          { clipPath: revealFrames(options) },
+          { duration: THEME_REVEAL_MS, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
+        )
+      },
+      () => undefined,
+    )
   }, [])
 
   return { theme, toggle }

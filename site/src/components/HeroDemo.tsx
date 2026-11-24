@@ -29,31 +29,34 @@ type Frame = {
 
 const TYPE_MS_PER_CHAR = 38
 
-function buildFrames(): Frame[] {
-  const reply = REPLY_CANDIDATES[1].text
-  const address = ADDRESS_CANDIDATES[1].text
-  const base: Frame = {
-    line1: '',
-    line2: '',
-    active: 0,
-    showGhost: false,
-    highlight: false,
-    pressed: '',
-    note: '',
-    keystrokes: 0,
-    durationMs: 900,
-  }
-  const frames: Frame[] = [
-    { ...base, note: 'Waiting for a text field', durationMs: 1000 },
-    { ...base, active: 1, highlight: true, note: 'Reads the thread via Accessibility · no screenshots', durationMs: 1300 },
-    { ...base, active: 1, highlight: true, showGhost: true, note: 'Answer predicted on-device · 142 ms', durationMs: 1700 },
-    { ...base, active: 1, line1: 'N', showGhost: true, pressed: 'N', keystrokes: 1, note: 'Re-ranked on “N” → no', durationMs: 1600 },
-    { ...base, active: 1, line1: reply, pressed: 'Tab', keystrokes: 2, note: 'Tab to accept', durationMs: 900 },
+const BASE_FRAME: Frame = {
+  line1: '',
+  line2: '',
+  active: 0,
+  showGhost: false,
+  highlight: false,
+  pressed: '',
+  note: '',
+  keystrokes: 0,
+  durationMs: 900,
+}
+
+function replyFrames(reply: string): Frame[] {
+  return [
+    { ...BASE_FRAME, note: 'Waiting for a text field', durationMs: 1000 },
+    { ...BASE_FRAME, active: 1, highlight: true, note: 'Reads the thread via Accessibility · no screenshots', durationMs: 1300 },
+    { ...BASE_FRAME, active: 1, highlight: true, showGhost: true, note: 'Answer predicted on-device · 142 ms', durationMs: 1700 },
+    { ...BASE_FRAME, active: 1, line1: 'N', showGhost: true, pressed: 'N', keystrokes: 1, note: 'Re-ranked on “N” → no', durationMs: 1600 },
+    { ...BASE_FRAME, active: 1, line1: reply, pressed: 'Tab', keystrokes: 2, note: 'Tab to accept', durationMs: 900 },
   ]
+}
+
+function addressFrames(reply: string, address: string): Frame[] {
+  const frames: Frame[] = []
   // The lead-in line is typed by hand, so it counts as keystrokes.
   for (let length = 1; length <= ADDRESS_LEAD.length; length += 1) {
     frames.push({
-      ...base,
+      ...BASE_FRAME,
       active: 2,
       line1: reply,
       line2: ADDRESS_LEAD.slice(0, length),
@@ -65,7 +68,7 @@ function buildFrames(): Frame[] {
   const afterLead = 2 + ADDRESS_LEAD.length
   frames.push(
     {
-      ...base,
+      ...BASE_FRAME,
       active: 2,
       line1: reply,
       line2: ADDRESS_LEAD,
@@ -75,7 +78,7 @@ function buildFrames(): Frame[] {
       durationMs: 1600,
     },
     {
-      ...base,
+      ...BASE_FRAME,
       active: 2,
       line1: reply,
       line2: `${ADDRESS_LEAD}F`,
@@ -86,7 +89,7 @@ function buildFrames(): Frame[] {
       durationMs: 1600,
     },
     {
-      ...base,
+      ...BASE_FRAME,
       active: 2,
       line1: reply,
       line2: `${ADDRESS_LEAD}${address}`,
@@ -97,6 +100,11 @@ function buildFrames(): Frame[] {
     },
   )
   return frames
+}
+
+function buildFrames(): Frame[] {
+  const reply = REPLY_CANDIDATES[1].text
+  return [...replyFrames(reply), ...addressFrames(reply, ADDRESS_CANDIDATES[1].text)]
 }
 
 const FRAMES = buildFrames()

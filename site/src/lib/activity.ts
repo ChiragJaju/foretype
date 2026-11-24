@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-export const REPO_URL = 'https://github.com/ChiragJaju/foretype'
+const REPO_URL = 'https://github.com/ChiragJaju/foretype'
 
 // Stack order, bottom to top; matches the --area-* palette order validated for adjacent pairs.
 export const AREAS = ['app', 'engine', 'site', 'docs', 'infra'] as const
@@ -16,7 +16,7 @@ export const AREA_SWATCH: Record<Area, string> = {
 
 export type DailyActivity = { date: string; commits: number; byArea: Record<Area, number> }
 // sha and subject exist only when the repo is public (scripts/activity.mjs --public).
-export type LatestCommit = { date: string; area: Area; sha?: string; subject?: string }
+type LatestCommit = { date: string; area: Area; sha?: string; subject?: string }
 export type Activity = {
   generatedAt: string
   repoPublic: boolean
