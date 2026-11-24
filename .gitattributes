@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# Lockfiles are machine-written: collapsed in GitHub diffs and left out of language stats.
+package-lock.json linguist-generated=true
+site/package-lock.json linguist-generated=true
+
+*.png binary

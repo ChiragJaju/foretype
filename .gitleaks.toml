@@ -1,0 +1,3 @@
+# Secret scan for the pre-commit hook and the CI "Repo checks" job: gitleaks' default rules.
+[extend]
+useDefault = true
