@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom'
 
 export type Theme = 'light' | 'dark'
 
-export const THEME_REVEAL_MS = 760
+const THEME_REVEAL_MS = 760
 const listeners = new Set<() => void>()
 
 function readTheme(): Theme {
@@ -25,10 +25,9 @@ function subscribe(notify: () => void) {
   return () => listeners.delete(notify)
 }
 
-export type ThemeReveal = 'circle' | 'wipe'
+type ThemeToggleOptions = { origin?: { x: number; y: number } }
 
-function revealFrames({ origin, reveal = 'circle' }: { origin?: { x: number; y: number }; reveal?: ThemeReveal }) {
-  if (reveal === 'wipe') return ['inset(0 0 100% 0)', 'inset(0 0 0% 0)']
+function revealFrames({ origin }: ThemeToggleOptions) {
   const x = origin?.x ?? innerWidth - 40
   const y = origin?.y ?? 32
   const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
@@ -40,8 +39,8 @@ const prefersReducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)'
 export function useTheme() {
   const theme = useSyncExternalStore(subscribe, readTheme, () => 'light' as Theme)
 
-  // Reveals the new theme as a circle from the click point, or as a top-down wipe.
-  const toggle = useCallback((options: { origin?: { x: number; y: number }; reveal?: ThemeReveal } = {}) => {
+  // Reveals the new theme as a circle from the click point.
+  const toggle = useCallback((options: ThemeToggleOptions = {}) => {
     const next: Theme = readTheme() === 'dark' ? 'light' : 'dark'
     if (!document.startViewTransition || prefersReducedMotion()) {
       writeTheme(next)
