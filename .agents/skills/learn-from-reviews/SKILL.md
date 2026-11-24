@@ -50,8 +50,8 @@ theme becomes a rule only if it passes all of these:
 3. **Is a choice, not a bug.** The author picked a worse pattern that compiled
    and passed tests.
 4. **Is not already enforced.** Not caught by the compiler, SwiftLint,
-   swift-format, oxlint, `tsc`, the privacy script, a repo check or a test, and
-   not already a rule: `git grep` the key noun across `docs/guidelines/` and
+   swift-format, oxlint, `tsc`, a repo check or a test, and not already a
+   rule: `git grep` the key noun across `docs/guidelines/` and
    every `AGENTS.md` first. If a rule almost covers it, sharpen that rule.
 5. **Is checkable from a diff.** A reviewer can point at a line.
 6. **Costs less than it saves** across the next twenty PRs.

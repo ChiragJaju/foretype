@@ -26,6 +26,8 @@ Remove what an engineer on this repo would not have written:
   (SWIFT-1 to SWIFT-3);
 - `print` or logged user text (OBS-1, PRIV-3);
 - shape or filler tests, tests that only assert a fake was called (TEST-5, TEST-6);
+- a new test beside one that already covers the behavior, or a test the change
+  made obsolete (TEST-9);
 - stray files, dated lines in living docs, a guide left untrue (AGENTS-11, DOC-2, DOC-3);
 - drive-by renames, refactors or reformatting outside the change (CODE-8).
 

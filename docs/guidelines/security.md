@@ -48,3 +48,8 @@ entry; a bump changes both together, never one alone.
 **SEC-8. No secrets in the repo.** No keys, tokens, `.env*` files, certificates
 or credentials, in code, fixtures or history. CI secrets live in GitHub Actions
 secrets.
+
+**SEC-9. A CI workflow pins every action to a commit SHA, checks out without
+persisted credentials, and never puts an event field straight into a script.**
+Untrusted input such as a PR body reaches a step through `env:`; permissions
+stay read-only unless a job says which write it needs.

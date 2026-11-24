@@ -90,6 +90,12 @@ Open every image (Read the PNGs) and check, at both widths and in both themes:
 - with reduced motion the section is in its settled state (SITE-5);
 - every claim it makes is true of the app (SITE-1).
 
+For a deeper pass on demand (a new section, a form, a control), review the
+changed components against Vercel's Web Interface Guidelines
+(https://github.com/vercel-labs/web-interface-guidelines): keyboard and focus,
+hit targets, input sizes, motion, dark-mode color scheme. It is a review aid,
+not a gate.
+
 Fix what is wrong and capture again. Stop the preview server when done.
 
 ## 5. Report

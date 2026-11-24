@@ -37,10 +37,16 @@ until a second approver exists.
 | swiftlint | Lint: `swiftlint --strict` with `.swiftlint.yml`; the PostToolUse hook on each edited Swift file | `file_length` (CODE-18), `function_body_length` (CODE-20), `type_body_length` (CODE-21), `cyclomatic_complexity` (CODE-11), `todo` (CODE-15), `force_unwrapping` (SWIFT-1), `force_try` (SWIFT-1), `force_cast` (SWIFT-1), `implicitly_unwrapped_optional` (SWIFT-1), `fatal_error_message` (SWIFT-4), `no_print` (OBS-1), `no_pasteboard` (PRIV-2) |
 | swift-format | Lint: `swift format lint --strict` with `.swift-format`; the PostToolUse hook formats each edited Swift file | `FileScopedDeclarationPrivacy` (SWIFT-7), `AlwaysUseLowerCamelCase` (SWIFT-8), `TypeNamesShouldBeCapitalized` (SWIFT-8), `format` (SWIFT-9) |
 | swiftc | Type-check and Unit tests: `swift build` with the settings in `app/Package.swift` | `Swift 6 language mode` (CONC-1), `ExistentialAny` (SWIFT-6), `target dependencies` (MOD-2) |
-| privacy-check | Repo checks and app CI: `app/scripts/privacy-check.sh` | `network API outside ModelStore.swift` (PRIV-1), `clipboard API` (PRIV-2) |
 | tsc | Type-check: `npm run build` in `site/` (`tsc -b`) | `strict` (CODE-9), `noUnusedLocals` (CODE-4) |
 | commitlint | the commit-msg hook and CI, with the scope list in `CONTRIBUTING.md` | `type-enum, scope-enum` (AGENTS-9) |
 | gitleaks | the pre-commit hook and CI, over the tree and every PR commit | `default rules` (SEC-8) |
+| oxlint | Lint: `npm run lint` in `site/` (`oxlint --type-aware --deny-warnings`, `.oxlintrc.json`); staged site files in the pre-commit hook, without type information | `max-lines` (CODE-18, CODE-19), `max-lines-per-function` (CODE-20, CODE-21), `no-floating-promises` (CODE-28), `no-misused-promises` (CODE-28), `jsx-a11y` (UI-4) |
+| knip | Lint: `npx knip` in `site/` (`knip.jsonc`); `make verify` when the site changed | `unused files, exports and dependencies` (CODE-4, CODE-26) |
+| typos | Repo checks (`verify.mjs`), on staged files in the pre-commit hook, with `_typos.toml` | `spelling` (CODE-27) |
+| shellcheck | Repo checks (`verify.mjs`) on every `*.sh` and `.githooks/*`; staged ones in the pre-commit hook | `all checks` (CODE-29) |
+| actionlint | Repo checks (`verify.mjs`); the pre-commit hook when a workflow is staged | `expression` (SEC-9) |
+| zizmor | Repo checks (`verify.mjs`, `--offline`); the pre-commit hook when a workflow is staged | `unpinned-uses` (SEC-9), `artipacked` (SEC-9), `template-injection` (SEC-9), `excessive-permissions` (SEC-9) |
+| agnix | Repo checks (`verify.mjs`, `--strict`); the pre-commit hook when an agent file is staged | `front matter and file references` (AGENTS-15) |
 
 ## Agents and the rule system (`docs/guidelines/agents.md`)
 
@@ -53,12 +59,15 @@ until a second approver exists.
 | AGENTS-5 | `check-guidelines` |  |
 | AGENTS-6 | `check-guidelines` |  |
 | AGENTS-7 | `check-guidelines` |  |
+| AGENTS-15 | agnix `front matter and file references` |  |
 | AGENTS-8 | review | review |
 | AGENTS-9 | commitlint `type-enum, scope-enum` |  |
 | AGENTS-10 | review | review: the PR checklist asks for it |
 | AGENTS-11 | `check-guidelines` | other stray files are review |
-| AGENTS-12 | review | review until a waiver reader lands |
+| AGENTS-12 | review | `scripts/lib/pr-waivers.mjs` honours a waiver only with a reason, outside code, and in a PR run only when the PR body and a commit both carry it; whether the reason holds is review |
 | AGENTS-13 | review | review |
+| AGENTS-14 | `check-exemplars` |  |
+| AGENTS-16 | `check-large-files` |  |
 
 ## Writing code (`docs/guidelines/code.md`)
 
@@ -67,7 +76,7 @@ until a second approver exists.
 | CODE-1 | review | review: whether something reusable exists needs the codebase in mind |
 | CODE-2 | review | review |
 | CODE-3 | review | review: where a thing belongs is a convention, not a pattern |
-| CODE-4 | tsc `noUnusedLocals` | `tsc` catches unused locals on the site; unused Swift `public` declarations and exports are review |
+| CODE-4 | knip `unused files, exports and dependencies`, tsc `noUnusedLocals` | knip catches unused site files, exports and dependencies; unused Swift `public` declarations are review |
 | CODE-5 | review | review |
 | CODE-6 | review | review: needs every call site |
 | CODE-7 | review | review: judgement |
@@ -76,20 +85,23 @@ until a second approver exists.
 | CODE-10 | review | review: naming quality is judgement |
 | CODE-11 | swiftlint `cyclomatic_complexity` | nested ternaries and else-if chains are review |
 | CODE-12 | review | review: which numbers carry meaning needs context |
+| CODE-27 | typos `spelling` |  |
+| CODE-28 | oxlint `no-floating-promises`, oxlint `no-misused-promises` | whether the comment beside an ignored rejection holds is review |
 | CODE-13 | review | review; `/deslop` trims comments |
 | CODE-14 | review | review |
-| CODE-15 | swiftlint `todo` | the site's comments and commented-out code are review |
+| CODE-15 | `check-anti-slop`, swiftlint `todo` | commented-out code beyond the `// removed` and `// old` markers is review |
 | CODE-16 | review | review: the maintainer's yes is in the issue or PR |
 | CODE-17 | review | review: provenance is not visible in a diff |
-| CODE-18 | swiftlint `file_length` | `.ts` files are review until a budget check lands |
-| CODE-19 | review | review until a budget check lands |
-| CODE-20 | swiftlint `function_body_length` | site functions are review until a budget check lands |
-| CODE-21 | swiftlint `type_body_length` | React components are review until a budget check lands |
-| CODE-22 | review | review until a budget check lands |
+| CODE-18 | oxlint `max-lines`, swiftlint `file_length` |  |
+| CODE-19 | oxlint `max-lines` |  |
+| CODE-20 | `check-budgets`, oxlint `max-lines-per-function`, swiftlint `function_body_length` | Swift closure bodies are review: SwiftLint's `function_body_length` covers functions only |
+| CODE-21 | oxlint `max-lines-per-function`, swiftlint `type_body_length` |  |
+| CODE-22 | `check-budgets` |  |
 | CODE-23 | review | review: measured with `foretype-eval` or XCTest performance tests, locally |
 | CODE-24 | review | review: CI runs the same checks and is the record |
-| CODE-25 | review | review: CI must be green to merge |
-| CODE-26 | review | review; `/deslop` sweeps the diff |
+| CODE-25 | `check-anti-slop` | `check-anti-slop` rejects a disable comment without its rule and a reason on added lines; the rest is review: CI must be green to merge |
+| CODE-26 | knip `unused files, exports and dependencies` | knip sweeps the site; Swift and the scripts are review, and `/deslop` sweeps the diff |
+| CODE-29 | shellcheck `all checks` |  |
 
 ## Concurrency (`docs/guidelines/concurrency.md`)
 
@@ -104,7 +116,7 @@ until a second approver exists.
 | CONC-7 | review | review |
 | CONC-8 | review | review: cancellation order is semantic |
 | CONC-9 | review | review |
-| CONC-10 | review | review until an import check lands |
+| CONC-10 | `check-imports` |  |
 
 ## Documentation (`docs/guidelines/docs.md`)
 
@@ -112,7 +124,7 @@ until a second approver exists.
 | --- | --- | --- |
 | DOC-1 | `check-guidelines` |  |
 | DOC-2 | `check-guidelines` | the present tense is review |
-| DOC-3 | review | review until a doc-currency check lands |
+| DOC-3 | `check-doc-currency` | `check-doc-currency` covers the code in `scripts/doc-currency-map.json`; a guide with no map entry is review |
 | DOC-4 | review | review |
 | DOC-5 | review | review |
 
@@ -120,13 +132,13 @@ until a second approver exists.
 
 | Rule | Enforced by | Note |
 | --- | --- | --- |
-| MOD-1 | review | review until an import check lands |
-| MOD-2 | swiftc `target dependencies` | a `Package.swift` change that adds a dependency edge is review |
-| MOD-3 | review | review until a contracts check lands |
+| MOD-1 | `check-imports` |  |
+| MOD-2 | `check-imports`, swiftc `target dependencies` |  |
+| MOD-3 | `check-contracts-frozen` |  |
 | MOD-4 | review | review |
 | MOD-5 | review | review |
-| MOD-6 | review | review until a contracts check lands |
-| MOD-7 | review | review: `Package.swift` declares who links it |
+| MOD-6 | `check-contracts-frozen` | `check-contracts-frozen` covers `Threading.swift`; the frozen entry points in `contracts.md` are review |
+| MOD-7 | `check-imports` |  |
 
 ## Observability (`docs/guidelines/observability.md`)
 
@@ -140,10 +152,10 @@ until a second approver exists.
 
 | Rule | Enforced by | Note |
 | --- | --- | --- |
-| PRIV-1 | privacy-check `network API outside ModelStore.swift` |  |
-| PRIV-2 | privacy-check `clipboard API`, swiftlint `no_pasteboard` |  |
+| PRIV-1 | `check-imports` |  |
+| PRIV-2 | `check-imports`, swiftlint `no_pasteboard` |  |
 | PRIV-3 | review | review until a logger check lands: whether a value is user text is semantic |
-| PRIV-4 | review | review: no dependency provides telemetry, and `privacy-check.sh` blocks the network APIs it would need |
+| PRIV-4 | `check-imports` | `check-imports` blocks the known telemetry and update SDKs by name; an unlisted one is review |
 | PRIV-5 | review | review; a test asserts on `FakeContextReader.readFieldIDs` that a denied field was never read |
 | PRIV-6 | review | review |
 | PRIV-7 | review | review; the `DownloadConsent` type makes a call without consent impossible |
@@ -162,6 +174,7 @@ until a second approver exists.
 | SEC-6 | review | review |
 | SEC-7 | review | review: SwiftPM verifies the binary target checksum, ModelStore verifies the model |
 | SEC-8 | gitleaks `default rules` |  |
+| SEC-9 | actionlint `expression`, zizmor `artipacked`, zizmor `excessive-permissions`, zizmor `template-injection`, zizmor `unpinned-uses` |  |
 
 ## Site (`docs/guidelines/site.md`)
 
@@ -201,7 +214,8 @@ until a second approver exists.
 | TEST-5 | review | review: whether a test pins a risk is judgement |
 | TEST-6 | review | review |
 | TEST-7 | review | review: the PR shows the failing run |
-| TEST-8 | review | review until a quarantine check lands |
+| TEST-9 | review | review: whether a test already covers the behavior needs the suite in mind |
+| TEST-8 | `check-quarantine` |  |
 
 ## UI (`docs/guidelines/ui.md`)
 
@@ -210,7 +224,7 @@ until a second approver exists.
 | UI-1 | review | review |
 | UI-2 | review | review |
 | UI-3 | review | review with the light and dark screenshots |
-| UI-4 | review | review |
+| UI-4 | oxlint `jsx-a11y` | jsx-a11y checks the site's elements; the app's controls and the ghost panel's label are review |
 | UI-5 | review | review |
 | UI-6 | review | review |
 
@@ -235,7 +249,7 @@ until a second approver exists.
 
 | Rule | Enforced by | Note |
 | --- | --- | --- |
-| MOD-engine-1 | review | review until an import check lands |
+| MOD-engine-1 | `check-imports` |  |
 | MOD-engine-2 | review | review |
 | MOD-engine-3 | review | review |
 | MOD-engine-4 | review | review: the `#if DEBUG` in `AppComposition.swift` |

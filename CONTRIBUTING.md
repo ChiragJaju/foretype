@@ -15,7 +15,7 @@ Line Tools, Node 24 and Homebrew.
 ```sh
 git clone https://github.com/ChiragJaju/foretype.git
 cd foretype
-make bootstrap          # npm installs, git hooks, swiftlint and gitleaks; ends with make doctor
+make bootstrap          # npm installs, git hooks, the Brewfile linters; ends with make doctor
 make verify             # the checks CI runs: repo checks, lint, type-check, build, tests
 ```
 
@@ -92,9 +92,9 @@ or backticks does not count, and the reason is required (AGENTS-12).
 
 | Waiver | Waives |
 | --- | --- |
-| `DOC-SKIP(<guide>): <reason>` | updating that guide although the PR touches its subsystem (DOC-3) |
+| `DOC-SKIP(<id>): <reason>` | updating a guide although the PR touches its code; the ids are in `scripts/doc-currency-map.json` (DOC-3) |
 | `CONTRACT-CHANGE(<reason>)` | a change to `app/Sources/ForetypeCore/Contracts/`, `Threading.swift` or a frozen entry point (MOD-3, MOD-6) |
-| `BUDGET-SKIP(<rule-id>): <reason>` | one size budget, CODE-18 to CODE-22 |
+| `BUDGET-SKIP(<rule-id>): <reason>` | one `check-budgets` budget (CODE-20 or CODE-22): the check prints it and passes; a SwiftLint or oxlint budget takes a disable comment with its rule and reason |
 
 ### Nothing stray
 

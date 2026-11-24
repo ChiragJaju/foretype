@@ -2,8 +2,8 @@
 
 # Rules index
 
-Every rule id, the file that defines it, and what enforces it. 131 rules: 30 enforced
-by a check or tool, in whole or in part, and 101 by review only.
+Every rule id, the file that defines it, and what enforces it. 139 rules: 51 enforced
+by a check or tool, in whole or in part, and 88 by review only.
 [enforcement.md](./enforcement.md) says what each check covers and why a rule is review.
 
 | Rule | Defined in | Enforced by |
@@ -15,16 +15,19 @@ by a check or tool, in whole or in part, and 101 by review only.
 | AGENTS-5 | `docs/guidelines/agents.md` | `check-guidelines` |
 | AGENTS-6 | `docs/guidelines/agents.md` | `check-guidelines` |
 | AGENTS-7 | `docs/guidelines/agents.md` | `check-guidelines` |
+| AGENTS-15 | `docs/guidelines/agents.md` | agnix `front matter and file references` |
 | AGENTS-8 | `docs/guidelines/agents.md` | review |
 | AGENTS-9 | `docs/guidelines/agents.md` | commitlint `type-enum, scope-enum` |
 | AGENTS-10 | `docs/guidelines/agents.md` | review |
 | AGENTS-11 | `docs/guidelines/agents.md` | `check-guidelines` |
 | AGENTS-12 | `docs/guidelines/agents.md` | review |
 | AGENTS-13 | `docs/guidelines/agents.md` | review |
+| AGENTS-14 | `docs/guidelines/agents.md` | `check-exemplars` |
+| AGENTS-16 | `docs/guidelines/agents.md` | `check-large-files` |
 | CODE-1 | `docs/guidelines/code.md` | review |
 | CODE-2 | `docs/guidelines/code.md` | review |
 | CODE-3 | `docs/guidelines/code.md` | review |
-| CODE-4 | `docs/guidelines/code.md` | tsc `noUnusedLocals` |
+| CODE-4 | `docs/guidelines/code.md` | knip `unused files, exports and dependencies`, tsc `noUnusedLocals` |
 | CODE-5 | `docs/guidelines/code.md` | review |
 | CODE-6 | `docs/guidelines/code.md` | review |
 | CODE-7 | `docs/guidelines/code.md` | review |
@@ -33,20 +36,23 @@ by a check or tool, in whole or in part, and 101 by review only.
 | CODE-10 | `docs/guidelines/code.md` | review |
 | CODE-11 | `docs/guidelines/code.md` | swiftlint `cyclomatic_complexity` |
 | CODE-12 | `docs/guidelines/code.md` | review |
+| CODE-27 | `docs/guidelines/code.md` | typos `spelling` |
+| CODE-28 | `docs/guidelines/code.md` | oxlint `no-floating-promises`, oxlint `no-misused-promises` |
 | CODE-13 | `docs/guidelines/code.md` | review |
 | CODE-14 | `docs/guidelines/code.md` | review |
-| CODE-15 | `docs/guidelines/code.md` | swiftlint `todo` |
+| CODE-15 | `docs/guidelines/code.md` | `check-anti-slop`, swiftlint `todo` |
 | CODE-16 | `docs/guidelines/code.md` | review |
 | CODE-17 | `docs/guidelines/code.md` | review |
-| CODE-18 | `docs/guidelines/code.md` | swiftlint `file_length` |
-| CODE-19 | `docs/guidelines/code.md` | review |
-| CODE-20 | `docs/guidelines/code.md` | swiftlint `function_body_length` |
-| CODE-21 | `docs/guidelines/code.md` | swiftlint `type_body_length` |
-| CODE-22 | `docs/guidelines/code.md` | review |
+| CODE-18 | `docs/guidelines/code.md` | oxlint `max-lines`, swiftlint `file_length` |
+| CODE-19 | `docs/guidelines/code.md` | oxlint `max-lines` |
+| CODE-20 | `docs/guidelines/code.md` | `check-budgets`, oxlint `max-lines-per-function`, swiftlint `function_body_length` |
+| CODE-21 | `docs/guidelines/code.md` | oxlint `max-lines-per-function`, swiftlint `type_body_length` |
+| CODE-22 | `docs/guidelines/code.md` | `check-budgets` |
 | CODE-23 | `docs/guidelines/code.md` | review |
 | CODE-24 | `docs/guidelines/code.md` | review |
-| CODE-25 | `docs/guidelines/code.md` | review |
-| CODE-26 | `docs/guidelines/code.md` | review |
+| CODE-25 | `docs/guidelines/code.md` | `check-anti-slop` |
+| CODE-26 | `docs/guidelines/code.md` | knip `unused files, exports and dependencies` |
+| CODE-29 | `docs/guidelines/code.md` | shellcheck `all checks` |
 | CONC-1 | `docs/guidelines/concurrency.md` | swiftc `Swift 6 language mode` |
 | CONC-2 | `docs/guidelines/concurrency.md` | review |
 | CONC-3 | `docs/guidelines/concurrency.md` | review |
@@ -56,26 +62,26 @@ by a check or tool, in whole or in part, and 101 by review only.
 | CONC-7 | `docs/guidelines/concurrency.md` | review |
 | CONC-8 | `docs/guidelines/concurrency.md` | review |
 | CONC-9 | `docs/guidelines/concurrency.md` | review |
-| CONC-10 | `docs/guidelines/concurrency.md` | review |
+| CONC-10 | `docs/guidelines/concurrency.md` | `check-imports` |
 | DOC-1 | `docs/guidelines/docs.md` | `check-guidelines` |
 | DOC-2 | `docs/guidelines/docs.md` | `check-guidelines` |
-| DOC-3 | `docs/guidelines/docs.md` | review |
+| DOC-3 | `docs/guidelines/docs.md` | `check-doc-currency` |
 | DOC-4 | `docs/guidelines/docs.md` | review |
 | DOC-5 | `docs/guidelines/docs.md` | review |
-| MOD-1 | `docs/guidelines/modules.md` | review |
-| MOD-2 | `docs/guidelines/modules.md` | swiftc `target dependencies` |
-| MOD-3 | `docs/guidelines/modules.md` | review |
+| MOD-1 | `docs/guidelines/modules.md` | `check-imports` |
+| MOD-2 | `docs/guidelines/modules.md` | `check-imports`, swiftc `target dependencies` |
+| MOD-3 | `docs/guidelines/modules.md` | `check-contracts-frozen` |
 | MOD-4 | `docs/guidelines/modules.md` | review |
 | MOD-5 | `docs/guidelines/modules.md` | review |
-| MOD-6 | `docs/guidelines/modules.md` | review |
-| MOD-7 | `docs/guidelines/modules.md` | review |
+| MOD-6 | `docs/guidelines/modules.md` | `check-contracts-frozen` |
+| MOD-7 | `docs/guidelines/modules.md` | `check-imports` |
 | OBS-1 | `docs/guidelines/observability.md` | swiftlint `no_print` |
 | OBS-2 | `docs/guidelines/observability.md` | review |
 | OBS-3 | `docs/guidelines/observability.md` | review |
-| PRIV-1 | `docs/guidelines/privacy.md` | privacy-check `network API outside ModelStore.swift` |
-| PRIV-2 | `docs/guidelines/privacy.md` | privacy-check `clipboard API`, swiftlint `no_pasteboard` |
+| PRIV-1 | `docs/guidelines/privacy.md` | `check-imports` |
+| PRIV-2 | `docs/guidelines/privacy.md` | `check-imports`, swiftlint `no_pasteboard` |
 | PRIV-3 | `docs/guidelines/privacy.md` | review |
-| PRIV-4 | `docs/guidelines/privacy.md` | review |
+| PRIV-4 | `docs/guidelines/privacy.md` | `check-imports` |
 | PRIV-5 | `docs/guidelines/privacy.md` | review |
 | PRIV-6 | `docs/guidelines/privacy.md` | review |
 | PRIV-7 | `docs/guidelines/privacy.md` | review |
@@ -89,6 +95,7 @@ by a check or tool, in whole or in part, and 101 by review only.
 | SEC-6 | `docs/guidelines/security.md` | review |
 | SEC-7 | `docs/guidelines/security.md` | review |
 | SEC-8 | `docs/guidelines/security.md` | gitleaks `default rules` |
+| SEC-9 | `docs/guidelines/security.md` | actionlint `expression`, zizmor `artipacked`, zizmor `excessive-permissions`, zizmor `template-injection`, zizmor `unpinned-uses` |
 | SITE-1 | `docs/guidelines/site.md` | review |
 | SITE-2 | `docs/guidelines/site.md` | review |
 | SITE-3 | `docs/guidelines/site.md` | review |
@@ -113,11 +120,12 @@ by a check or tool, in whole or in part, and 101 by review only.
 | TEST-5 | `docs/guidelines/testing.md` | review |
 | TEST-6 | `docs/guidelines/testing.md` | review |
 | TEST-7 | `docs/guidelines/testing.md` | review |
-| TEST-8 | `docs/guidelines/testing.md` | review |
+| TEST-9 | `docs/guidelines/testing.md` | review |
+| TEST-8 | `docs/guidelines/testing.md` | `check-quarantine` |
 | UI-1 | `docs/guidelines/ui.md` | review |
 | UI-2 | `docs/guidelines/ui.md` | review |
 | UI-3 | `docs/guidelines/ui.md` | review |
-| UI-4 | `docs/guidelines/ui.md` | review |
+| UI-4 | `docs/guidelines/ui.md` | oxlint `jsx-a11y` |
 | UI-5 | `docs/guidelines/ui.md` | review |
 | UI-6 | `docs/guidelines/ui.md` | review |
 | MOD-app-1 | `app/Sources/ForetypeApp/AGENTS.md` | review |
@@ -127,7 +135,7 @@ by a check or tool, in whole or in part, and 101 by review only.
 | MOD-core-1 | `app/Sources/ForetypeCore/AGENTS.md` | review |
 | MOD-core-2 | `app/Sources/ForetypeCore/AGENTS.md` | review |
 | MOD-core-3 | `app/Sources/ForetypeCore/AGENTS.md` | review |
-| MOD-engine-1 | `app/Sources/ForetypeEngine/AGENTS.md` | review |
+| MOD-engine-1 | `app/Sources/ForetypeEngine/AGENTS.md` | `check-imports` |
 | MOD-engine-2 | `app/Sources/ForetypeEngine/AGENTS.md` | review |
 | MOD-engine-3 | `app/Sources/ForetypeEngine/AGENTS.md` | review |
 | MOD-engine-4 | `app/Sources/ForetypeEngine/AGENTS.md` | review |
