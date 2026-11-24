@@ -61,7 +61,10 @@ function DraftVisual() {
         <span className="text-accent">{elapsed} ms</span>
       </div>
       <div className="mt-2 h-1 overflow-hidden rounded-full bg-bg-3">
-        <div className="h-full rounded-full bg-accent transition-[width] duration-75" style={{ width: `${(shown / DRAFT.length) * 100}%` }} />
+        <div
+          className="h-full rounded-full bg-accent transition-[width] duration-75"
+          style={{ width: `${(shown / DRAFT.length) * 100}%` }}
+        />
       </div>
     </div>
   )

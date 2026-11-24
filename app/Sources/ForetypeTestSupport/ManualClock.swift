@@ -59,7 +59,7 @@ public final class ManualClock: MonotonicClock {
     /// Moves time forward and resumes every sleeper whose deadline is now due.
     public func advance(by duration: Duration) {
         let due = state.withLock { state -> [Sleeper] in
-            state.now = state.now + duration
+            state.now.sinceOrigin += duration
             let now = state.now
             let ready = state.sleepers.filter { $0.deadline <= now }.sorted { $0.deadline < $1.deadline }
             state.sleepers.removeAll { $0.deadline <= now }

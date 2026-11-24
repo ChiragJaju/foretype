@@ -4,14 +4,14 @@ Foretype is pre-alpha. The app is not usable yet, so the most helpful things rig
 
 ## Dev setup
 
-You need an Apple Silicon Mac on macOS 26 or later, and Xcode 27 or the Command Line Tools.
+You need an Apple Silicon Mac on macOS 26 or later, Xcode 27 or the Command Line Tools, Node 24 and Homebrew.
 
 ```sh
 git clone https://github.com/ChiragJaju/foretype.git
-cd foretype/app
-swift build
-swift test
-./scripts/bundle.sh   # builds Foretype.app
+cd foretype
+make bootstrap          # npm installs, git hooks, swiftlint and gitleaks; ends with make doctor
+make verify             # the checks CI runs: repo checks, lint, type-check, build, tests
+app/scripts/bundle.sh   # builds Foretype.app
 ```
 
 Run `./scripts/dev-sign.sh` once. It creates a local self-signed identity, so your Accessibility grant survives rebuilds. Grant Accessibility to the built app in System Settings → Privacy & Security → Accessibility.

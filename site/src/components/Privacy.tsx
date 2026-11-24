@@ -6,11 +6,23 @@ import { Reveal } from './Reveal'
 
 const POINTS = [
   { icon: Cpu, title: 'Runs on your Mac', body: 'A small model on Apple Silicon does the predicting. No server sees your drafts.' },
-  { icon: WifiOff, title: 'Zero telemetry', body: 'No analytics, no crash pings, no licence calls home. Check it with any network monitor.' },
+  {
+    icon: WifiOff,
+    title: 'Zero telemetry',
+    body: 'No analytics, no crash pings, no licence calls home. Check it with any network monitor.',
+  },
   { icon: Code, title: 'Open-source core', body: 'Read every line that touches your text. Build it yourself if you prefer.' },
-  { icon: ShieldBan, title: 'Blocked by default', body: 'Banks, password managers, 2FA apps and secure fields are off-limits from day one.' },
+  {
+    icon: ShieldBan,
+    title: 'Blocked by default',
+    body: 'Banks, password managers, 2FA apps and secure fields are off-limits from day one.',
+  },
   { icon: EyeOff, title: 'Nothing on screen is kept', body: 'Context is read when you focus a field and dropped when you leave it.' },
-  { icon: Cloud, title: 'Cloud only if you flip it', body: 'Want a bigger model for long replies? Turn it on per app. Off unless you choose.' },
+  {
+    icon: Cloud,
+    title: 'Cloud only if you flip it',
+    body: 'Want a bigger model for long replies? Turn it on per app. Off unless you choose.',
+  },
 ]
 
 const TRAFFIC = [
@@ -122,8 +134,8 @@ export function Privacy() {
               </h2>
             </div>
             <p className="max-w-[440px] text-[16px] leading-relaxed text-band-ink-2">
-              Something that reads your screen should be something you can read. The core is open source, and in local mode it
-              makes no network calls at all.
+              Something that reads your screen should be something you can read. The core is open source, and in local mode it makes no
+              network calls at all.
             </p>
           </Reveal>
 

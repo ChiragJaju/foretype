@@ -15,7 +15,10 @@ public struct ModelSpec: Sendable, Hashable, Codable, Identifiable {
     public var sha256: String
     public var license: String
 
-    public init(id: String, displayName: String, downloadURL: URL, repository: String, revision: String, fileName: String, byteCount: Int64, sha256: String, license: String) {
+    public init(
+        id: String, displayName: String, downloadURL: URL, repository: String, revision: String, fileName: String,
+        byteCount: Int64, sha256: String, license: String
+    ) {
         self.id = id
         self.displayName = displayName
         self.downloadURL = downloadURL

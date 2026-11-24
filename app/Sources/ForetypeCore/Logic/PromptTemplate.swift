@@ -7,7 +7,9 @@ public enum PromptTemplate {
     public static let lead = " "
 
     /// Placeholder: an empty prompt, which the engine treats as nothing to prepare.
-    public static func prepare(_ context: CapturedContext, kind: FieldKind, userName: String, budget: ContextBudget) -> PreparedPrompt {
+    public static func prepare(_ context: CapturedContext, kind: FieldKind, userName: String, budget: ContextBudget)
+        -> PreparedPrompt
+    {
         PreparedPrompt(fieldID: context.field.id, text: "", lead: lead)
     }
 }

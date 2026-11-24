@@ -1,5 +1,8 @@
-name: Site CI
+name: CI
 
+# Required checks: Repo checks, Lint, Type-check, Unit tests. The last three are rollups over the
+# site and app jobs, which run only when their paths change (always on main). Tests that need the
+# Accessibility permission live in the XcodeGen UI-test target and run locally, never here.
 on:
   pull_request:
   push:
@@ -8,12 +11,40 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  # A PR's newer push supersedes the older run; every main commit keeps its own result.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  site:
+  changes:
+    name: Changed paths
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: site
+    timeout-minutes: 5
+    outputs:
+      app: ${{ steps.paths.outputs.app }}
+      site: ${{ steps.paths.outputs.site }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      # On a PR, HEAD is the merge commit and HEAD^1 the base, so the diff is exactly the PR.
+      - id: paths
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != pull_request ]; then
+            { echo "app=true"; echo "site=true"; } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed="$(git diff --name-only HEAD^1 HEAD)"
+          touches() { if printf '%s\n' "$changed" | grep -qE "$1"; then echo true; else echo false; fi; }
+          echo "app=$(touches '^(app/|\.swiftlint\.yml$|\.swift-format$|\.github/workflows/ci\.yml$)')" >> "$GITHUB_OUTPUT"
+          echo "site=$(touches '^(site/|scripts/activity\.mjs$|\.oxfmtrc\.json$|package(-lock)?\.json$|\.github/workflows/ci\.yml$)')" >> "$GITHUB_OUTPUT"
+
+  repo-checks:
+    name: Repo checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
         with:
@@ -21,13 +52,172 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 24
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install gitleaks
+        env:
+          GITLEAKS_VERSION: 8.30.1
+          GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+        run: |
+          archive="$RUNNER_TEMP/gitleaks.tar.gz"
+          curl -sSfL -o "$archive" "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "$GITLEAKS_SHA256  $archive" | sha256sum -c -
+          tar -xzf "$archive" -C "$RUNNER_TEMP" gitleaks
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Secret scan
+        run: gitleaks git --redact --no-banner .
+
+      - name: Commit messages
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npx --no-install commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+
+      - name: Repo checks
+        run: node scripts/verify.mjs --tier repo
+
+  site-lint:
+    name: Site lint
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            site/package-lock.json
+
+      - run: npm ci
+      - run: npm ci
+        working-directory: site
+
+      - name: oxlint
+        working-directory: site
+        run: npm run lint
+
+      - name: oxfmt
+        run: npx --no-install oxfmt --check site/src scripts
+
+  site-build:
+    name: Site type-check and build
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # activity.mjs reads the git history.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: site/package-lock.json
 
       - run: npm ci
-      - run: npm run lint
-      - name: Typecheck and build
+
+      - name: Type-check and build
         run: |
           node ../scripts/activity.mjs
           npm run build
+
+  # One macOS job: free macOS runners are scarce, so lint, build and test share one runner and cache.
+  app:
+    name: App lint, build and test
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/cache@v4
+        with:
+          path: app/.build
+          key: spm-${{ runner.os }}-${{ hashFiles('app/Package.swift', 'app/Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Install SwiftLint
+        run: |
+          command -v swiftlint >/dev/null || brew install swiftlint
+          swiftlint version
+          swift --version
+
+      - name: SwiftLint
+        run: swiftlint lint --strict --quiet
+
+      - name: swift-format
+        run: swift format lint --strict --recursive app/Sources app/Tests app/E2E app/Package.swift
+
+      - name: Build every target
+        working-directory: app
+        run: swift build
+
+      # Every SwiftPM test target: none needs the Accessibility permission or a model download.
+      - name: Unit tests
+        run: app/scripts/test.sh
+
+  # Rollups: branch protection needs fixed names. Only success or skipped passes.
+  lint:
+    name: Lint
+    if: always()
+    needs: [changes, site-lint, app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "needed jobs: $RESULTS"
+          # Allowlist: a job that never got a runner reports "abandoned", not "failure".
+          for result in $RESULTS; do
+            case "$result" in success | skipped) ;; *) exit 1 ;; esac
+          done
+
+  type-check:
+    name: Type-check
+    if: always()
+    needs: [changes, site-build, app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "needed jobs: $RESULTS"
+          # Allowlist: a job that never got a runner reports "abandoned", not "failure".
+          for result in $RESULTS; do
+            case "$result" in success | skipped) ;; *) exit 1 ;; esac
+          done
+
+  unit-tests:
+    name: Unit tests
+    if: always()
+    needs: [changes, app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "needed jobs: $RESULTS"
+          # Allowlist: a job that never got a runner reports "abandoned", not "failure".
+          for result in $RESULTS; do
+            case "$result" in success | skipped) ;; *) exit 1 ;; esac
+          done

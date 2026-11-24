@@ -74,7 +74,9 @@ export function Hero() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-7 inline-flex items-center gap-2 rounded-full bg-bg-2 py-1 pr-3 pl-1 text-[13px] text-ink-2 shadow-ring"
         >
-          <span className="rounded-full bg-ink px-2 py-0.5 font-mono text-[10.5px] font-medium tracking-wider text-bg uppercase">Open source</span>
+          <span className="rounded-full bg-ink px-2 py-0.5 font-mono text-[10.5px] font-medium tracking-wider text-bg uppercase">
+            Open source
+          </span>
           Local-first autocomplete for macOS
           <ArrowRight size={13} />
         </motion.a>
@@ -88,8 +90,8 @@ export function Hero() {
             className="max-w-[440px] pb-2"
           >
             <p className="text-[17px] leading-relaxed text-ink-2">
-              Foretype reads what's on your screen — the question, the thread, the form — and suggests what you were about to
-              write. Every key you press re-ranks it. Press Tab to take it. It runs on your Mac and sends nothing.
+              Foretype reads what's on your screen — the question, the thread, the form — and suggests what you were about to write. Every
+              key you press re-ranks it. Press Tab to take it. It runs on your Mac and sends nothing.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Magnetic>

@@ -47,7 +47,11 @@ function WaitlistForm() {
             className="relative rounded-[7px] px-3.5 py-1.5 font-medium"
           >
             {platform === option && (
-              <motion.span layoutId="platform-pill" className="absolute inset-0 rounded-[7px] bg-bg-2 shadow-ring" transition={{ type: 'spring', stiffness: 400, damping: 32 }} />
+              <motion.span
+                layoutId="platform-pill"
+                className="absolute inset-0 rounded-[7px] bg-bg-2 shadow-ring"
+                transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+              />
             )}
             <span className={`relative ${platform === option ? 'text-ink' : 'text-ink-2'}`}>
               {option === 'mac' ? 'macOS' : 'Android · soon'}
@@ -57,7 +61,10 @@ function WaitlistForm() {
       </div>
       <div className="flex gap-2 rounded-[14px] bg-bg-2 p-1.5 shadow-ring focus-within:shadow-[0_0_0_4px_var(--accent-soft),var(--ring)]">
         <div className="relative min-w-0 flex-1 text-[15px]">
-          <span aria-hidden className="pointer-events-none absolute inset-0 flex items-center overflow-hidden px-3 whitespace-pre text-transparent">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 flex items-center overflow-hidden px-3 whitespace-pre text-transparent"
+          >
             {email}
             <span className="text-ghost">{ghost}</span>
           </span>
@@ -77,7 +84,10 @@ function WaitlistForm() {
           />
         </div>
         <Magnetic>
-          <button type="submit" className="group inline-flex h-11 items-center gap-2 rounded-[10px] bg-ink px-4 text-[14.5px] font-medium text-bg sm:px-5">
+          <button
+            type="submit"
+            className="group inline-flex h-11 items-center gap-2 rounded-[10px] bg-ink px-4 text-[14.5px] font-medium text-bg sm:px-5"
+          >
             Join
             <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
           </button>
@@ -117,15 +127,28 @@ export function Footer() {
       <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-4 border-t border-line pt-6 text-[13.5px] text-ink-2">
         <Logo />
         <nav className="flex flex-wrap gap-x-6 gap-y-2">
-          <a href="#how" className="hover:text-ink">How it works</a>
-          <a href="#privacy" className="hover:text-ink">Privacy</a>
-          <a href="#build-log" className="hover:text-ink">Build log</a>
-          <a href="#android" className="hover:text-ink">Android</a>
-          <a {...sourceLink} className="hover:text-ink">{repoPublic ? 'GitHub' : 'Source opens with the beta'}</a>
+          <a href="#how" className="hover:text-ink">
+            How it works
+          </a>
+          <a href="#privacy" className="hover:text-ink">
+            Privacy
+          </a>
+          <a href="#build-log" className="hover:text-ink">
+            Build log
+          </a>
+          <a href="#android" className="hover:text-ink">
+            Android
+          </a>
+          <a {...sourceLink} className="hover:text-ink">
+            {repoPublic ? 'GitHub' : 'Source opens with the beta'}
+          </a>
         </nav>
         <span>© 2026 Foretype</span>
       </div>
-      <div aria-hidden className="mx-auto mt-10 max-w-[1240px] pb-[0.06em] text-center text-[25vw] leading-[0.95] font-medium tracking-[-0.06em] select-none sm:text-[22vw] lg:text-[290px]">
+      <div
+        aria-hidden
+        className="mx-auto mt-10 max-w-[1240px] pb-[0.06em] text-center text-[25vw] leading-[0.95] font-medium tracking-[-0.06em] select-none sm:text-[22vw] lg:text-[290px]"
+      >
         <span>Fore</span>
         <span className="text-ghost">type</span>
       </div>

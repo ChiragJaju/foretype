@@ -51,9 +51,7 @@ export function Apps() {
   return (
     <section className="py-10">
       <Reveal className="mx-auto mb-8 max-w-[1240px] px-4 sm:px-6">
-        <p className="text-center text-[14px] text-ink-2">
-          Built on macOS Accessibility, so it reaches the text fields you already use.
-        </p>
+        <p className="text-center text-[14px] text-ink-2">Built on macOS Accessibility, so it reaches the text fields you already use.</p>
       </Reveal>
       <div className="space-y-3">
         <Row apps={ROW_ONE} />

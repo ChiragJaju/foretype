@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Reveal } from './Reveal'
 
 const STATS = [
-  { value: 56, prefix: 'up to ', suffix: '%', label: 'fewer keystrokes when prediction can see the conversation', note: 'Google SpeakFaster study, 2024' },
+  {
+    value: 56,
+    prefix: 'up to ',
+    suffix: '%',
+    label: 'fewer keystrokes when prediction can see the conversation',
+    note: 'Google SpeakFaster study, 2024',
+  },
   { value: 150, prefix: '~', suffix: ' ms', label: 'target time from focus to suggestion on Apple Silicon', note: 'Design target' },
   { value: 0, prefix: '', suffix: ' bytes', label: 'leave your Mac in local mode', note: 'Verifiable: open-source core' },
   { value: 1, prefix: '', suffix: ' key', label: 'to take a suggestion. Keep typing to ignore it.', note: 'Tab' },

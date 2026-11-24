@@ -12,7 +12,10 @@ public struct ContextBudget: Sendable, Hashable {
     public var maxTextBeforeCaretUTF16: Int
     public var maxTextAfterCaretUTF16: Int
 
-    public init(maxNearbyCharacters: Int, maxNodesVisited: Int, maxWalkDuration: Duration, maxTextBeforeCaretUTF16: Int, maxTextAfterCaretUTF16: Int) {
+    public init(
+        maxNearbyCharacters: Int, maxNodesVisited: Int, maxWalkDuration: Duration, maxTextBeforeCaretUTF16: Int,
+        maxTextAfterCaretUTF16: Int
+    ) {
         self.maxNearbyCharacters = maxNearbyCharacters
         self.maxNodesVisited = maxNodesVisited
         self.maxWalkDuration = maxWalkDuration
@@ -40,7 +43,10 @@ public struct FieldLabels: Sendable, Hashable {
     /// `AXDOMIdentifier` in web content, e.g. `email` or `shipping-street`.
     public var domIdentifier: String?
 
-    public init(title: String? = nil, placeholder: String? = nil, help: String? = nil, linkedLabel: String? = nil, domIdentifier: String? = nil) {
+    public init(
+        title: String? = nil, placeholder: String? = nil, help: String? = nil, linkedLabel: String? = nil,
+        domIdentifier: String? = nil
+    ) {
         self.title = title
         self.placeholder = placeholder
         self.help = help
@@ -77,7 +83,9 @@ public struct CapturedContext: Sendable, Hashable {
     public var nearby: [ContextPiece]
     public var snapshot: FieldSnapshot
 
-    public init(field: FocusedField, labels: FieldLabels, windowTitle: String?, nearby: [ContextPiece], snapshot: FieldSnapshot) {
+    public init(
+        field: FocusedField, labels: FieldLabels, windowTitle: String?, nearby: [ContextPiece], snapshot: FieldSnapshot
+    ) {
         self.field = field
         self.labels = labels
         self.windowTitle = windowTitle

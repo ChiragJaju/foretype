@@ -127,61 +127,61 @@ body {
 }
 
 @layer components {
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
 
-.display {
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 1.04;
-}
+  .display {
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+  }
 
-.keycap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-width: 1.9em;
-  height: 1.9em;
-  padding: 0 0.5em;
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink);
-  background: var(--key-top);
-  box-shadow:
-    0 0 0 1px var(--line-2),
-    0 2px 0 var(--key-side),
-    0 0 18px -2px var(--key-glow);
-  transition:
-    transform 0.15s var(--ease-out),
-    box-shadow 0.15s var(--ease-out);
-}
+  .keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 1.9em;
+    height: 1.9em;
+    padding: 0 0.5em;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--key-top);
+    box-shadow:
+      0 0 0 1px var(--line-2),
+      0 2px 0 var(--key-side),
+      0 0 18px -2px var(--key-glow);
+    transition:
+      transform 0.15s var(--ease-out),
+      box-shadow 0.15s var(--ease-out);
+  }
 
-.keycap[data-pressed='true'] {
-  transform: translateY(2px);
-  box-shadow:
-    0 0 0 1px var(--accent),
-    0 0 0 var(--key-side),
-    0 0 24px 0 var(--key-glow);
-}
+  .keycap[data-pressed='true'] {
+    transform: translateY(2px);
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 0 0 var(--key-side),
+      0 0 24px 0 var(--key-glow);
+  }
 
-.caret {
-  display: inline-block;
-  width: 2px;
-  height: 1.1em;
-  margin: 0 1px -0.18em;
-  background: var(--accent);
-  border-radius: 1px;
-  animation: blink 1.05s steps(1) infinite;
-}
+  .caret {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    margin: 0 1px -0.18em;
+    background: var(--accent);
+    border-radius: 1px;
+    animation: blink 1.05s steps(1) infinite;
+  }
 }
 
 @keyframes blink {
@@ -207,10 +207,10 @@ body {
 }
 
 @layer components {
-.dot-grid {
-  background-image: radial-gradient(var(--line-2) 1px, transparent 1px);
-  background-size: 22px 22px;
-}
+  .dot-grid {
+    background-image: radial-gradient(var(--line-2) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
 }
 
 /* Theme switch: a circular reveal driven from the toggle (see lib/theme.ts). */

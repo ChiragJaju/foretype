@@ -7,9 +7,21 @@ import { Reveal } from './Reveal'
 const KeyboardScene = lazy(() => import('./KeyboardScene'))
 
 const FEATURES = [
-  { icon: Grid2x2Check, title: 'Keys that grow before you hit them', body: 'The letter you are about to press gets a bigger invisible landing zone, sized by what you are likely to say next.' },
-  { icon: Sparkles, title: 'Sloppy swipes, exact words', body: 'The same on-device model reads rough swipes and taps together with the conversation on screen.' },
-  { icon: Smartphone, title: 'Why a keyboard, and why Android first', body: 'Phones only let the keyboard itself reshape keys. Android lets us ship one with an on-device model; iPhone follows.' },
+  {
+    icon: Grid2x2Check,
+    title: 'Keys that grow before you hit them',
+    body: 'The letter you are about to press gets a bigger invisible landing zone, sized by what you are likely to say next.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Sloppy swipes, exact words',
+    body: 'The same on-device model reads rough swipes and taps together with the conversation on screen.',
+  },
+  {
+    icon: Smartphone,
+    title: 'Why a keyboard, and why Android first',
+    body: 'Phones only let the keyboard itself reshape keys. Android lets us ship one with an on-device model; iPhone follows.',
+  },
 ]
 
 export function Android() {
@@ -63,9 +75,7 @@ export function Android() {
             data-cursor-label="tilt"
             className="dot-grid relative aspect-[4/3.4] overflow-hidden rounded-[22px] bg-bg-2 shadow-ring"
           >
-            <div className="absolute top-4 left-4 z-10 font-mono text-[11px] tracking-wider text-ink-3 uppercase">
-              Hit targets · live
-            </div>
+            <div className="absolute top-4 left-4 z-10 font-mono text-[11px] tracking-wider text-ink-3 uppercase">Hit targets · live</div>
             <Suspense fallback={null}>{sceneMounted && <KeyboardScene active={sceneVisible} />}</Suspense>
           </div>
         </Reveal>

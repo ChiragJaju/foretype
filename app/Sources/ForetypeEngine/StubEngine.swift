@@ -24,7 +24,9 @@ public actor StubEngine: Engine {
 
     public func prepare(_ prompt: PreparedPrompt) throws(EngineError) {}
 
-    public func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void) throws(EngineError) -> Completion {
+    public func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void)
+        throws(EngineError) -> Completion
+    {
         Completion(requestID: request.id, text: "", stopReason: .endOfGeneration, timings: .zero)
     }
 

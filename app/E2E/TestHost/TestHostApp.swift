@@ -87,18 +87,18 @@ final class TestHostApp: NSObject, NSApplicationDelegate {
     }
 
     private static let webFormHTML = """
-    <!doctype html>
-    <html><body style="font: 13px -apple-system">
-    <h3>Dinner on Thursday at 8?</h3>
-    <label>Reply <textarea id="web-textarea" rows="2" cols="60"></textarea></label>
-    <p>Comment</p><div id="web-contenteditable" contenteditable="true" style="border:1px solid #999;min-height:2em"></div>
-    <h3>Shipping address</h3>
-    <label>Full name <input id="name" autocomplete="name"></label><br>
-    <label>Email <input id="email" type="email" autocomplete="email"></label><br>
-    <label>Street <input id="street" autocomplete="address-line1"></label><br>
-    <label>City <input id="city" autocomplete="address-level2"></label><br>
-    <label>Postal code <input id="postal" autocomplete="postal-code"></label><br>
-    <label>Password <input id="web-password" type="password"></label>
-    </body></html>
-    """
+        <!doctype html>
+        <html><body style="font: 13px -apple-system">
+        <h3>Dinner on Thursday at 8?</h3>
+        <label>Reply <textarea id="web-textarea" rows="2" cols="60"></textarea></label>
+        <p>Comment</p><div id="web-contenteditable" contenteditable="true" style="border:1px solid #999;min-height:2em"></div>
+        <h3>Shipping address</h3>
+        <label>Full name <input id="name" autocomplete="name"></label><br>
+        <label>Email <input id="email" type="email" autocomplete="email"></label><br>
+        <label>Street <input id="street" autocomplete="address-line1"></label><br>
+        <label>City <input id="city" autocomplete="address-level2"></label><br>
+        <label>Postal code <input id="postal" autocomplete="postal-code"></label><br>
+        <label>Password <input id="web-password" type="password"></label>
+        </body></html>
+        """
 }

@@ -35,7 +35,10 @@ export function PinnedPanels({ id, count, header, panel }: PinnedPanelsProps) {
     <section id={id} ref={ref} className="relative" style={{ height: wide ? `${count * 100}vh` : 'auto' }}>
       <div className={wide ? 'sticky top-0 h-screen overflow-hidden' : ''}>
         {header(active, wide)}
-        <motion.div className={wide ? 'flex h-[calc(100%-6rem)]' : 'flex flex-col'} style={wide ? { x, width: `${count * 100}%` } : undefined}>
+        <motion.div
+          className={wide ? 'flex h-[calc(100%-6rem)]' : 'flex flex-col'}
+          style={wide ? { x, width: `${count * 100}%` } : undefined}
+        >
           {Array.from({ length: count }, (_, index) => (
             <div key={index} className="lg:h-full lg:min-w-0 lg:flex-1">
               {panel(index, wide ? index === active : true)}

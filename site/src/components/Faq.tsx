@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { QUESTIONS } from '../lib/content'
 import { Reveal } from './Reveal'
 
-
 export function Faq() {
   const [open, setOpen] = useState(0)
   return (

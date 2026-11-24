@@ -2,8 +2,8 @@
 // removed in v1.0.0). Use only the b12676 API the P0 spike proved: llama_batch_ext_*, llama_process,
 // llama_memory_*, llama_state_seq_* for hybrid models. The public signatures are frozen.
 
-import Foundation
 import ForetypeCore
+import Foundation
 import llama
 
 /// llama.cpp on Metal, one sequence. Runs on its own serial queue so a 100 ms prefill never blocks
@@ -38,7 +38,9 @@ public actor LlamaEngine: Engine {
         throw .notPrepared
     }
 
-    public func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void) throws(EngineError) -> Completion {
+    public func complete(_ request: CompletionRequest, onPartial: @escaping @Sendable (String) -> Void)
+        throws(EngineError) -> Completion
+    {
         throw .notPrepared
     }
 

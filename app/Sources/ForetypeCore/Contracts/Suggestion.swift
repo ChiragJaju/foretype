@@ -59,7 +59,9 @@ public struct Snippet: Sendable, Hashable, Codable, Identifiable {
     /// field gets only the street.
     public var parts: [FieldKind: String]
 
-    public init(id: SnippetID = SnippetID(), label: String, kind: SnippetKind, text: String, parts: [FieldKind: String] = [:]) {
+    public init(
+        id: SnippetID = SnippetID(), label: String, kind: SnippetKind, text: String, parts: [FieldKind: String] = [:]
+    ) {
         self.id = id
         self.label = label
         self.kind = kind

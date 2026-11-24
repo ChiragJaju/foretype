@@ -1,0 +1,4 @@
+#!/bin/sh
+# The repo checks plus lint of the files this branch changed against origin/main.
+set -eu
+node scripts/verify.mjs --changed --tier fast

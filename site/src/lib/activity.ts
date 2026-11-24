@@ -89,7 +89,11 @@ function createJsonStore<T>(url: string, isValid: (value: unknown) => value is T
   }
 
   return function useJsonStore() {
-    return useSyncExternalStore(subscribe, () => state, () => state)
+    return useSyncExternalStore(
+      subscribe,
+      () => state,
+      () => state,
+    )
   }
 }
 

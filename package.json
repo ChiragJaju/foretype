@@ -1,0 +1,20 @@
+{
+  "name": "foretype-repo",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
+    "verify": "node scripts/verify.mjs",
+    "verify:fast": "node scripts/verify.mjs --changed --tier fast",
+    "format": "oxfmt site/src scripts && swift format --in-place --recursive app/Sources app/Tests app/E2E app/Package.swift",
+    "format:check": "oxfmt --check site/src scripts && swift format lint --strict --recursive app/Sources app/Tests app/E2E app/Package.swift"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
+    "oxfmt": "0.78.0"
+  }
+}

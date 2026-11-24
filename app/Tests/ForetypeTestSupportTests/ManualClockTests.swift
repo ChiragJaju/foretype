@@ -36,7 +36,9 @@ struct ManualClockTests {
         try await engine.load()
         try await engine.prepare(PreparedPrompt(fieldID: field.id, text: "prompt", lead: " "))
 
-        let completion = try await engine.complete(CompletionRequest(id: RequestID(rawValue: 1), fieldID: field.id, typed: "N")) { _ in }
+        let completion = try await engine.complete(
+            CompletionRequest(id: RequestID(rawValue: 1), fieldID: field.id, typed: "N")
+        ) { _ in }
         #expect(completion.text == "o, sorry, I can't.")
     }
 }
