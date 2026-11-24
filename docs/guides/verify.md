@@ -45,14 +45,14 @@ The tiers nest:
 | Check | Fails on |
 | --- | --- |
 | `check-guidelines` | the rule system ([guidelines.md](guidelines.md)) |
-| `check-anti-slop` | on lines the branch adds: `TODO`, `FIXME`, `HACK`, a `// removed` or `// old` marker, a disable comment without its rule and reason, and any SwiftLint or oxlint finding, warnings included |
+| `check-anti-slop` | on lines the branch adds: `TODO`, `FIXME`, `HACK`, a `// removed` or `// old` marker, and a disable comment without its rule and reason; SwiftLint and oxlint findings are the Lint job's |
 | `check-budgets` | a SwiftUI `body` over 80 lines (CODE-22) and a `.tsx` function that is not a component over 50 (CODE-20); SwiftLint and oxlint hold the other budgets |
 | `check-imports` | an import or `Package.swift` edge outside MOD-1, MOD-2 or MOD-7, `llama` outside `LlamaEngine.swift`, a wall-clock read in Core, a network or clipboard API, a telemetry SDK |
 | `check-contracts-frozen` | a change to `Contracts/` or `Threading.swift` without a `CONTRACT-CHANGE` waiver and a `contracts.md` update |
 | `check-doc-currency` | code in `scripts/doc-currency-map.json` changed without its guide, unless `DOC-SKIP(<id>)` |
 | `check-quarantine` | a skipped test without a quarantine line, or one expired or more than 30 days out |
 | `check-large-files` | a tracked file over 1 MB other than the lockfiles |
-| `check-exemplars` | a `## Copy from` file that is missing, carries a disable, or has a lint finding |
+| `check-exemplars` | a `## Copy from` file that is missing or carries a disable; the Lint job holds it to zero findings |
 
 A length is counted in code lines from the declaration to its closing bracket;
 blank and comment-only lines do not count. The checks that judge a branch
@@ -60,8 +60,7 @@ compare with `VERIFY_BASE` (set by `--changed`) or the merge base with
 `origin/main`; in CI `VERIFY_BASE` is the PR's base or the commit main had
 before the push, and a check with no base fails. They read waivers from the
 branch's commit messages and, in CI, the PR body
-([CONTRIBUTING.md](../../CONTRIBUTING.md) § Waivers). A check whose linter is
-missing locally says so and skips that part; CI's Lint job lints every file.
+([CONTRIBUTING.md](../../CONTRIBUTING.md) § Waivers).
 
 Periphery (dead Swift code) is not wired in: it needs a full Xcode index, so it
 would only fit a manual or nightly run.

@@ -85,6 +85,7 @@
     "AGENTS-11": "other stray files are review",
     "AGENTS-12": "`scripts/lib/pr-waivers.mjs` honours a waiver only with a reason, outside code, and in a PR run only when the PR body and a commit both carry it; whether the reason holds is review",
     "AGENTS-13": "review",
+    "AGENTS-14": "`check-exemplars` covers existence and disable comments; zero SwiftLint and oxlint findings is the Lint job's, which lints every file",
     "DOC-2": "the present tense is review",
     "DOC-3": "`check-doc-currency` covers the code in `scripts/doc-currency-map.json`; a guide with no map entry is review",
     "DOC-4": "review",

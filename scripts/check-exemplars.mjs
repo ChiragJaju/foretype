@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-// AGENTS-14: every file a `## Copy from` table names exists, carries no lint or type-check disable, and passes
-// SwiftLint or oxlint with zero findings, since agents copy it. A missing linter is skipped with a notice.
-import { spawnSync } from 'node:child_process'
+// AGENTS-14: every file a `## Copy from` table names exists and carries no lint or type-check disable, since agents
+// copy it. The Lint job holds it to zero SwiftLint and oxlint findings with every other file.
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -37,42 +36,14 @@ export function findExemplarProblems(agentsFile, { named, file, line }, read) {
   return DISABLE.test(text) ? [finding(file, 1, 'AGENTS-14', `an exemplar carries a lint or type-check disable`)] : []
 }
 
-/** Lint findings for the exemplars, or a notice when the linter is missing. */
-function lintExemplars(files) {
-  const swift = files.filter((file) => file.endsWith('.swift'))
-  const site = files.filter((file) => file.startsWith('site/'))
-  const problems = []
-  const notices = []
-  if (swift.length > 0) {
-    const run = spawnSync('swiftlint', ['lint', '--quiet', '--reporter', 'json', ...swift], { cwd: ROOT, encoding: 'utf8' })
-    if (run.error) notices.push('swiftlint not installed; Swift exemplars were not linted')
-    else
-      for (const it of JSON.parse(run.stdout || '[]'))
-        problems.push(finding(path.relative(ROOT, it.file), it.line, 'AGENTS-14', `swiftlint ${it.rule_id}: ${it.reason}`))
-  }
-  const oxlint = path.join(ROOT, 'site/node_modules/.bin/oxlint')
-  if (site.length > 0 && !existsSync(oxlint)) notices.push('site/node_modules missing; site exemplars were not linted')
-  else if (site.length > 0) {
-    const run = spawnSync(oxlint, ['--format', 'json', ...site.map((file) => path.relative('site', file))], {
-      cwd: path.join(ROOT, 'site'),
-      encoding: 'utf8',
-    })
-    for (const it of JSON.parse(run.stdout).diagnostics)
-      problems.push(finding(`site/${it.filename}`, it.labels[0]?.span.line ?? 1, 'AGENTS-14', `oxlint ${it.code}: ${it.message}`))
-  }
-  return { problems, notices }
-}
-
 function main() {
   const exists = (file) => existsSync(path.join(ROOT, file))
   const read = (file) => (exists(file) ? readFileSync(path.join(ROOT, file), 'utf8') : null)
   const tables = listFiles(ROOT, ['*AGENTS.md']).filter((file) => path.posix.basename(file) === 'AGENTS.md')
   const named = tables.flatMap((agentsFile) => listExemplars(agentsFile, read(agentsFile), exists).map((it) => ({ agentsFile, ...it })))
   const fileProblems = named.flatMap(({ agentsFile, ...it }) => findExemplarProblems(agentsFile, it, read))
-  const present = [...new Set(named.map(({ file }) => file).filter(exists))]
-  const { problems, notices } = lintExemplars(present)
-  for (const notice of notices) console.log(`check-exemplars: ${notice}`)
-  return report('check-exemplars', [...fileProblems, ...problems], `${present.length} exemplars exist and are clean`)
+  const present = new Set(named.map(({ file }) => file).filter(exists))
+  return report('check-exemplars', fileProblems, `${present.size} exemplars exist and carry no disable`)
 }
 
 if (isEntry(import.meta.url)) process.exitCode = main()

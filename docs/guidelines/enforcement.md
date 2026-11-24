@@ -66,7 +66,7 @@ until a second approver exists.
 | AGENTS-11 | `check-guidelines` | other stray files are review |
 | AGENTS-12 | review | `scripts/lib/pr-waivers.mjs` honours a waiver only with a reason, outside code, and in a PR run only when the PR body and a commit both carry it; whether the reason holds is review |
 | AGENTS-13 | review | review |
-| AGENTS-14 | `check-exemplars` |  |
+| AGENTS-14 | `check-exemplars` | `check-exemplars` covers existence and disable comments; zero SwiftLint and oxlint findings is the Lint job's, which lints every file |
 | AGENTS-16 | `check-large-files` |  |
 
 ## Writing code (`docs/guidelines/code.md`)
