@@ -6,21 +6,51 @@ import PackageDescription
 /// checking is on everywhere. `ExistentialAny` makes every protocol-typed value spell `any`.
 let swiftSettings: [SwiftSetting] = [.enableUpcomingFeature("ExistentialAny")]
 
+/// SwiftPM copies llama.framework next to the built binary but adds no rpath, so dyld aborts at
+/// launch without these. `@executable_path` serves `swift run`; `../Frameworks` serves Foretype.app.
+let executableLinkerSettings: [LinkerSetting] = [
+    .unsafeFlags([
+        "-Xlinker", "-rpath", "-Xlinker", "@executable_path",
+        "-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks",
+    ]),
+]
+
 let package = Package(
     name: "Foretype",
     platforms: [.macOS(.v26)],
     products: [
         .library(name: "ForetypeCore", targets: ["ForetypeCore"]),
+        .library(name: "ForetypeEngine", targets: ["ForetypeEngine"]),
         .library(name: "ForetypeTestSupport", targets: ["ForetypeTestSupport"]),
+        .executable(name: "foretype-eval", targets: ["foretype-eval"]),
     ],
     targets: [
+        // llama.cpp release b12676 (2026-11-24). The checksum is the SHA-256 of the zip and
+        // matches the GitHub release asset digest. Bump both together, never one alone.
+        .binaryTarget(
+            name: "llama",
+            url: "https://github.com/ggml-org/llama.cpp/releases/download/b12676/llama-b12676-xcframework.zip",
+            checksum: "0a8985e744bde1306c18271a34a9d7e9d093e3e93d48e1d7eff6d3e6a2122c94"
+        ),
+
         // Pure Swift: value types, every seam protocol, and the suggestion logic. No AppKit.
         .target(name: "ForetypeCore", swiftSettings: swiftSettings),
+
+        // Model engines behind `Engine`, plus the consented model download.
+        .target(name: "ForetypeEngine", dependencies: ["ForetypeCore", "llama"], swiftSettings: swiftSettings),
 
         // Fakes for every Core seam. Linked only by test targets.
         .target(name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], swiftSettings: swiftSettings),
 
+        .executableTarget(
+            name: "foretype-eval",
+            dependencies: ["ForetypeCore", "ForetypeEngine"],
+            swiftSettings: swiftSettings,
+            linkerSettings: executableLinkerSettings
+        ),
+
         .testTarget(name: "ForetypeCoreTests", dependencies: ["ForetypeCore", "ForetypeTestSupport"], swiftSettings: swiftSettings),
         .testTarget(name: "ForetypeTestSupportTests", dependencies: ["ForetypeTestSupport"], swiftSettings: swiftSettings),
+        .testTarget(name: "ForetypeEngineTests", dependencies: ["ForetypeEngine", "ForetypeTestSupport"], swiftSettings: swiftSettings),
     ]
 )
