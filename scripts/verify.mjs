@@ -24,6 +24,9 @@ const AGENT_FILE = /(?:^|\/)(?:AGENTS|CLAUDE|SKILL)\.md$|^\.claude\//
 const ANY_FILE = /./
 const USAGE = 'usage: node scripts/verify.mjs [--tier repo|fast|full] [--changed] [--list]'
 const USAGE_EXIT_CODE = 2
+// npm tools run from node_modules/.bin under the step's cwd (the root or site/), which skips npx's startup.
+const NPM_BIN_DIR = 'node_modules/.bin/'
+const npmBin = (tool) => `${NPM_BIN_DIR}${tool}`
 
 /** The parsed flags, or null when the tier is not one of TIERS. */
 function parseArgs(argv) {
@@ -69,17 +72,11 @@ function repoLintSteps(files) {
       files,
       WORKFLOW_FILE,
     ),
-    scoped(
-      'agnix',
-      ['npx', '--no-install', 'agnix', '--strict', '.'],
-      (paths) => ['npx', '--no-install', 'agnix', '--strict', ...paths],
-      files,
-      AGENT_FILE,
-    ),
+    scoped('agnix', [npmBin('agnix'), '--strict', '.'], (paths) => [npmBin('agnix'), '--strict', ...paths], files, AGENT_FILE),
     scoped(
       'oxfmt scripts',
-      ['npx', '--no-install', 'oxfmt', '--check', 'scripts'],
-      (paths) => ['npx', '--no-install', 'oxfmt', '--check', ...paths],
+      [npmBin('oxfmt'), '--check', 'scripts'],
+      (paths) => [npmBin('oxfmt'), '--check', ...paths],
       files,
       FORMATTED_SCRIPT_FILE,
     ),
@@ -105,29 +102,29 @@ function lintSteps(files) {
     ),
     scoped(
       'oxfmt site',
-      ['npx', '--no-install', 'oxfmt', '--check', 'site/src'],
-      (paths) => ['npx', '--no-install', 'oxfmt', '--check', ...paths],
+      [npmBin('oxfmt'), '--check', 'site/src'],
+      (paths) => [npmBin('oxfmt'), '--check', ...paths],
       files,
       FORMATTED_SITE_FILE,
     ),
     {
       ...scoped(
         'oxlint',
-        ['npx', '--no-install', 'oxlint', '--type-aware', '--deny-warnings'],
-        (paths) => ['npx', '--no-install', 'oxlint', '--type-aware', '--deny-warnings', ...siteRelative(paths)],
+        [npmBin('oxlint'), '--type-aware', '--deny-warnings'],
+        (paths) => [npmBin('oxlint'), '--type-aware', '--deny-warnings', ...siteRelative(paths)],
         files,
         LINTED_SITE_FILE,
       ),
       cwd: 'site',
     },
     // knip reads the whole site graph, so any site change runs it on all of it.
-    { ...scoped('knip', ['npx', '--no-install', 'knip'], () => ['npx', '--no-install', 'knip'], files, SITE_FILE), cwd: 'site' },
+    { ...scoped('knip', [npmBin('knip')], () => [npmBin('knip')], files, SITE_FILE), cwd: 'site' },
   ]
 }
 
 function fullSteps() {
   return [
-    { label: 'site type-check', argv: ['npx', '--no-install', 'tsc', '-b'], cwd: 'site' },
+    { label: 'site type-check', argv: [npmBin('tsc'), '-b'], cwd: 'site' },
     { label: 'swift build', argv: ['swift', 'build'], cwd: 'app' },
     { label: 'app unit tests', argv: ['app/scripts/test.sh'] },
     { label: 'site unit tests', argv: ['npm', 'test'], cwd: 'site' },
@@ -142,7 +139,8 @@ function runStep(step, env) {
   }
   console.log(`\n▸ ${step.label}: ${step.argv.join(' ')}`)
   const run = spawnSync(step.argv[0], step.argv.slice(1), { cwd: resolve(ROOT, step.cwd ?? '.'), env, stdio: 'inherit' })
-  if (run.error) console.log(`  could not start ${step.argv[0]}: ${run.error.message}; run make doctor`)
+  const setup = step.argv[0].startsWith(NPM_BIN_DIR) ? 'make bootstrap' : 'make doctor'
+  if (run.error) console.log(`  could not start ${step.argv[0]}: ${run.error.message}; run ${setup}`)
   return run.status === 0 ? 'pass' : 'FAIL'
 }
 

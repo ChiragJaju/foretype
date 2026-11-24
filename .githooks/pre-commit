@@ -22,6 +22,12 @@ run_on() {
   fi
   printf '%s\n' "$files" | tr '\n' '\0' | xargs -0 "$@"
 }
+# Fails when a tool that `npm ci` installs is missing, rather than skipping it.
+require_npm_bin() {
+  [ -x "$1" ] && return 0
+  echo "pre-commit: $1 is missing; run make bootstrap"
+  exit 1
+}
 
 printf '%s\n' "$staged" | while IFS= read -r path; do
   printf '%s\n' "$path" | grep -qE "$LOCKFILES" && continue
@@ -46,13 +52,15 @@ fi
 
 formatted_files="$(staged_matching '^(site/src|scripts)/.*\.(js|mjs|ts|tsx|css|json)$')"
 if [ -n "$formatted_files" ]; then
-  run_on "$formatted_files" npx --no-install oxfmt
+  require_npm_bin node_modules/.bin/oxfmt
+  run_on "$formatted_files" node_modules/.bin/oxfmt
   run_on "$formatted_files" git add --
 fi
 
 site_files="$(staged_matching '^site/src/.*\.(ts|tsx)$' | sed 's|^site/||')"
 if [ -n "$site_files" ]; then
-  (cd site && run_on "$site_files" npx --no-install oxlint --deny-warnings)
+  require_npm_bin site/node_modules/.bin/oxlint
+  (cd site && run_on "$site_files" node_modules/.bin/oxlint --deny-warnings)
 fi
 
 run_on "$(staged_matching '\.sh$|^\.githooks/')" shellcheck
@@ -62,4 +70,8 @@ workflow_files="$(staged_matching '^\.github/workflows/[^/]+\.ya?ml$')"
 run_on "$workflow_files" actionlint
 run_on "$workflow_files" zizmor --offline --quiet
 
-run_on "$(staged_matching '(^|/)(AGENTS|CLAUDE|SKILL)\.md$|^\.claude/')" npx --no-install agnix --strict
+agent_files="$(staged_matching '(^|/)(AGENTS|CLAUDE|SKILL)\.md$|^\.claude/')"
+if [ -n "$agent_files" ]; then
+  require_npm_bin node_modules/.bin/agnix
+  run_on "$agent_files" node_modules/.bin/agnix --strict
+fi
