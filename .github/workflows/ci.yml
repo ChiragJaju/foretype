@@ -5,6 +5,8 @@ name: CI
 # Accessibility permission live in the XcodeGen UI-test target and run locally, never here.
 on:
   pull_request:
+    # edited: a waiver lives in the PR body, so editing it re-runs the checks (a title edit does too).
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
 
@@ -13,7 +15,7 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  # A PR's newer push supersedes the older run; every main commit keeps its own result.
+  # A PR's newer push or body edit supersedes the older run on the same head; every main commit keeps its own result.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
