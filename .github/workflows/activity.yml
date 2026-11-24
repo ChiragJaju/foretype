@@ -1,0 +1,72 @@
+name: Build log deploy
+
+# Regenerates site/public/activity.json from git history and deploys the site.
+# The JSON is never committed back; each deploy carries a fresh copy.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Generate activity.json
+        env:
+          EVENT_REPO_PRIVATE: ${{ github.event.repository.private }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Scheduled runs may not carry the repository payload, so ask the API when it is missing.
+          private="$EVENT_REPO_PRIVATE"
+          if [ -z "$private" ]; then
+            private="$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)"
+          fi
+          if [ "$private" = "false" ]; then
+            node scripts/activity.mjs --public
+          else
+            node scripts/activity.mjs
+          fi
+
+      - name: Install
+        working-directory: site
+        run: npm ci
+
+      - name: Build only (no Vercel token)
+        if: env.VERCEL_TOKEN == ''
+        working-directory: site
+        run: |
+          npm run build
+          echo "::notice::VERCEL_TOKEN is not set; built the site but skipped the deploy."
+
+      # vercel build runs npm run build; the prebuilt deploy then ships the activity.json generated above,
+      # which a remote Vercel build could not produce because it has no git history.
+      - name: Build and deploy to Vercel
+        if: env.VERCEL_TOKEN != ''
+        working-directory: site
+        run: |
+          npx --yes vercel@latest pull --yes --environment=production --token "$VERCEL_TOKEN"
+          npx --yes vercel@latest build --prod --token "$VERCEL_TOKEN"
+          npx --yes vercel@latest deploy --prebuilt --prod --yes --token "$VERCEL_TOKEN"
