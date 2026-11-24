@@ -75,7 +75,13 @@ function repoLintSteps(files) {
     scoped('shellcheck', ['shellcheck', ...shellFiles], (paths) => ['shellcheck', ...paths], files, SHELL_FILE),
     scoped('typos', ['typos'], (paths) => ['typos', '--force-exclude', '--', ...paths], files, ANY_FILE),
     scoped('actionlint', ['actionlint'], (paths) => ['actionlint', ...paths], files, WORKFLOW_FILE),
-    scoped('zizmor', ['zizmor', '--offline', '.github/workflows'], (paths) => ['zizmor', '--offline', ...paths], files, WORKFLOW_FILE),
+    scoped(
+      'zizmor',
+      ['zizmor', '--offline', '--quiet', '.github/workflows'],
+      (paths) => ['zizmor', '--offline', '--quiet', ...paths],
+      files,
+      WORKFLOW_FILE,
+    ),
     scoped(
       'agnix',
       ['npx', '--no-install', 'agnix', '--strict', '.'],

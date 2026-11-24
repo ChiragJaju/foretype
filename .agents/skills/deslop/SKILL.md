@@ -1,6 +1,6 @@
 ---
 name: deslop
-description: Remove AI code slop from the branch diff by applying the repo's rules (AGENTS.md files and docs/guidelines). Run before opening or updating a PR.
+description: Remove AI code slop from the branch diff by applying the repo's rules (AGENTS.md files and docs/guidelines). Use before opening or updating a PR.
 ---
 
 # Remove AI code slop

@@ -60,6 +60,6 @@ run_on "$staged" typos --force-exclude --
 
 workflow_files="$(staged_matching '^\.github/workflows/[^/]+\.ya?ml$')"
 run_on "$workflow_files" actionlint
-run_on "$workflow_files" zizmor --offline
+run_on "$workflow_files" zizmor --offline --quiet
 
 run_on "$(staged_matching '(^|/)(AGENTS|CLAUDE|SKILL)\.md$|^\.claude/')" npx --no-install agnix --strict

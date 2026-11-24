@@ -29,8 +29,9 @@ or footer: use the first or last section as the sibling.
 ## 3. Capture
 
 `playwright-core` is a site dev dependency; it drives the installed Chrome
-(`channel: 'chrome'`). Without Chrome, run `npx playwright-core install
-chromium` once and drop the `channel` option.
+(`channel: 'chrome'`). Without Chrome, run
+`npx --no-install playwright-core install chromium` once and drop the
+`channel` option.
 
 Run from `site/`, with `SECTIONS` set to the two indexes and `OUT` to a folder
 outside the repo (screenshots are never committed, AGENTS-11):

@@ -1,6 +1,6 @@
 ---
 name: learn-from-reviews
-description: Mine recent Foretype PR reviews for corrections that recur and make each one hold next time, as a check where a tool can see it, else a rule with an id in the file that owns the topic. Opens its own PR. Run after a heavily reviewed PR merges, or every few weeks.
+description: Mine recent Foretype PR reviews for corrections that recur and make each one hold next time, as a check where a tool can see it, else a rule with an id in the file that owns the topic. Opens its own PR. Use after a heavily reviewed PR merges, or every few weeks.
 ---
 
 # Learn from reviews
