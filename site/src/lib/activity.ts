@@ -24,7 +24,7 @@ export type Activity = {
   daily: DailyActivity[]
   latest: LatestCommit[]
 }
-export const MILESTONE_STATUSES = ['done', 'in-progress', 'planned'] as const
+const MILESTONE_STATUSES = ['done', 'in-progress', 'planned'] as const
 export type MilestoneStatus = (typeof MILESTONE_STATUSES)[number]
 export type Milestone = { date: string; title: string; detail: string; status: MilestoneStatus; area: Area }
 
