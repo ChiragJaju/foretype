@@ -57,9 +57,16 @@
   },
   {
     "date": "2026-11-24",
-    "title": "In progress: on-device model benchmark (MLX vs llama.cpp, Qwen3.5 0.8B / 2B)",
-    "detail": "Measuring time to first token and suggestion quality on Apple Silicon to pick the runtime and model size.",
-    "status": "in-progress",
+    "title": "P0: on-device model passes the speed and quality bar",
+    "detail": "First suggested word in about 7 ms once a field is focused, and about 105 ms including reading the context. 18 of 20 test replies rated good or OK with a 1.5B model on llama.cpp. Apple's built-in model stays as the no-download fallback.",
+    "status": "done",
     "area": "engine"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "Next: freeze the app's core types and build modules in parallel",
+    "detail": "Core, engine, macOS adapters and the app UI get built side by side against one agreed contract.",
+    "status": "in-progress",
+    "area": "app"
   }
 ]

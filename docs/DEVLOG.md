@@ -4,6 +4,24 @@ Newest first. Foretype is pre-alpha, and this log says what is true on each date
 
 ## 2026-11-24
 
+### Model spike: speed and quality pass
+
+20 realistic reply cases (email, Slack, scheduling, yes/no, form fields), each rated GOOD (accept as is), OK (right idea, needs edits) or BAD. Latency in milliseconds, p50 / p95, on an Apple M5 Pro.
+
+| Engine and model | Prompt | First word, warm | Focus to first word | RAM | GOOD / OK / BAD |
+|---|---|---|---|---|---|
+| llama.cpp, Qwen2.5-1.5B-Instruct Q4_K_M | plain continuation | 7 / 22 | 105 / 166 | 1.34 GB | 14 / 4 / 2 |
+| llama.cpp, Qwen3.5-2B-Base | plain continuation | 10 / 32 | 135 / 220 | 1.48 GB | 13 / 5 / 2 |
+| llama.cpp, Qwen3.5-0.8B-Base | plain continuation | 7 / 18 | 70 / 112 | 0.73 GB | 11 / 6 / 3 |
+| llama.cpp, Qwen2.5-1.5B-Instruct Q4_K_M | chat template | 7 / 25 | 143 / 194 | 1.29 GB | 10 / 5 / 5 |
+| Apple Foundation Models | instructions | 643 / 882 | 643 / 882 | system | 9 / 3 / 8 |
+
+- **Verdict: go.** The budget was a first word within 150 ms; the default setup shows it in about 7 ms once the field's context is loaded.
+- A plain "continue this text" prompt beats the chat template on the same model.
+- Every llama.cpp run respected what you had already typed, thanks to token healing.
+- The first launch of a fresh build takes about 6.5 s while Metal compiles, so the app will preload at launch.
+- **Plan:** ship llama.cpp with Qwen2.5-1.5B-Instruct. Qwen3.5-2B-Base stays the challenger for the 50-case eval, Qwen3.5-0.8B-Base covers low-RAM Macs, and Apple's model is only the no-download fallback. MLX is benchmarked next.
+
 ### Accessibility spike: five real apps
 
 The throwaway spike app now shows ghost text at the caret and inserts it on Tab in TextEdit, Notes, Safari, Chrome and Slack on macOS 27.3. Mail was not tested (no account on the test Mac).
