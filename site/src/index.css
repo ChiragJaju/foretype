@@ -1,0 +1,215 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  --bg: #f6f5f3;
+  --bg-2: #fbfaf9;
+  --bg-3: #eeece8;
+  --ink: #141311;
+  --ink-2: #5d5a54;
+  --ink-3: #9a968f;
+  --line: rgb(20 19 17 / 0.09);
+  --line-2: rgb(20 19 17 / 0.16);
+  --accent: #3350f0;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(51 80 240 / 0.1);
+  --ghost: rgb(20 19 17 / 0.3);
+  --band: #141311;
+  --band-2: #1d1c19;
+  --band-ink: #f2f0ec;
+  --band-ink-2: #9e9a93;
+  --band-line: rgb(242 240 236 / 0.1);
+  --key-top: #ffffff;
+  --key-side: #dedad3;
+  --key-glow: transparent;
+  --ring: 0 0 0 1px var(--line), 0 1px 2px rgb(20 19 17 / 0.04), 0 8px 24px -12px rgb(20 19 17 / 0.12);
+  --screen: 0 0 0 1px var(--line), 0 2px 4px rgb(20 19 17 / 0.03), 0 24px 60px -24px rgb(20 19 17 / 0.22);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: #0d0c0b;
+  --bg-2: #161513;
+  --bg-3: #1f1e1b;
+  --ink: #f2f0ec;
+  --ink-2: #a5a19a;
+  --ink-3: #66635e;
+  --line: rgb(242 240 236 / 0.08);
+  --line-2: rgb(242 240 236 / 0.15);
+  --accent: #7d8cff;
+  --accent-ink: #0d0c0b;
+  --accent-soft: rgb(125 140 255 / 0.14);
+  --ghost: rgb(242 240 236 / 0.3);
+  --band: #161513;
+  --band-2: #1f1e1b;
+  --band-ink: #f2f0ec;
+  --band-ink-2: #a5a19a;
+  --band-line: rgb(242 240 236 / 0.08);
+  --key-top: #1f1e1b;
+  --key-side: #0a0a09;
+  --key-glow: rgb(125 140 255 / 0.55);
+  --ring: 0 0 0 1px var(--line), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --screen: 0 0 0 1px var(--line-2), 0 24px 80px -24px rgb(0 0 0 / 0.8), 0 0 120px -40px rgb(125 140 255 / 0.25);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', monospace;
+  --font-hand: 'Caveat', cursive;
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-ghost: var(--ghost);
+  --color-band: var(--band);
+  --color-band-2: var(--band-2);
+  --color-band-ink: var(--band-ink);
+  --color-band-ink-2: var(--band-ink-2);
+  --color-band-line: var(--band-line);
+  --shadow-ring: var(--ring);
+  --shadow-screen: var(--screen);
+  --ease-out: var(--ease-out);
+}
+
+html {
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* The custom cursor replaces the native one only on precise pointers. */
+@media (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: none !important;
+  }
+}
+
+@layer components {
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.display {
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+.keycap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 1.9em;
+  height: 1.9em;
+  padding: 0 0.5em;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--key-top);
+  box-shadow:
+    0 0 0 1px var(--line-2),
+    0 2px 0 var(--key-side),
+    0 0 18px -2px var(--key-glow);
+  transition:
+    transform 0.15s var(--ease-out),
+    box-shadow 0.15s var(--ease-out);
+}
+
+.keycap[data-pressed='true'] {
+  transform: translateY(2px);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 0 var(--key-side),
+    0 0 24px 0 var(--key-glow);
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin: 0 1px -0.18em;
+  background: var(--accent);
+  border-radius: 1px;
+  animation: blink 1.05s steps(1) infinite;
+}
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}
+
+@layer components {
+.dot-grid {
+  background-image: radial-gradient(var(--line-2) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+}
+
+/* Theme switch: a circular reveal driven from the toggle (see lib/theme.ts). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

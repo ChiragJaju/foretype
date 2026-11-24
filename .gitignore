@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+dist/
+.build/
+.swiftpm/
+*.xcuserstate
+xcuserdata/
+DerivedData/
+.vercel
+.env*
+models/
+*.gguf
+*.safetensors
