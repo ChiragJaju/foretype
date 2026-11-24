@@ -84,10 +84,7 @@ function renderAll(root) {
   const intro = readFileSync(path.join(root, INTRO_FILE), 'utf8')
   return new Map([
     ['docs/guidelines/rules-index.md', renderIndex({ sources, declarations })],
-    [
-      'docs/guidelines/enforcement.md',
-      renderEnforcement({ intro, sources, declarations, notes: readNotes(root), tools: readTools(root) }),
-    ],
+    ['docs/guidelines/enforcement.md', renderEnforcement({ intro, sources, declarations, notes: readNotes(root), tools: readTools(root) })],
   ])
 }
 

@@ -58,7 +58,8 @@ export function findFormProblems(sources) {
   return sources.flatMap(({ file, text, definitions }) => {
     const defined = new Set(definitions.map((it) => it.line))
     const lines = proseLines(text)
-    const opensParagraph = (index) => index === 0 || lines[index - 1].text.trim() === '' || lines[index - 1].number !== lines[index].number - 1
+    const opensParagraph = (index) =>
+      index === 0 || lines[index - 1].text.trim() === '' || lines[index - 1].number !== lines[index].number - 1
     const malformed = lines
       .filter(({ text: line, number }, index) => opensParagraph(index) && DEFINITION_LIKE.test(line) && !defined.has(number))
       .map(({ number }) => problem(file, number, 'AGENTS-2', 'a rule definition opens its line as **PREFIX-n. Sentence.**'))
@@ -86,11 +87,15 @@ export function findIdProblems(sources) {
       else firstSeen.set(id, at)
       const [, prefix, scope] = /^([A-Z]+)(?:-([a-z][a-z0-9]*))?-\d+$/.exec(id)
       if (!(prefix in FAMILIES)) {
-        problems.push(problem(file, line, 'AGENTS-2', `${id}: unknown prefix ${prefix}; the families are ${Object.keys(FAMILIES).join(', ')}`))
+        problems.push(
+          problem(file, line, 'AGENTS-2', `${id}: unknown prefix ${prefix}; the families are ${Object.keys(FAMILIES).join(', ')}`),
+        )
         continue
       }
-      if (scope && !isAgentsFile) problems.push(problem(file, line, 'AGENTS-3', `${id} is module-scoped; it belongs in that module's AGENTS.md`))
-      if (!scope && isAgentsFile) problems.push(problem(file, line, 'AGENTS-3', `${id}: an AGENTS.md defines scoped ids only (${prefix}-<module>-1)`))
+      if (scope && !isAgentsFile)
+        problems.push(problem(file, line, 'AGENTS-3', `${id} is module-scoped; it belongs in that module's AGENTS.md`))
+      if (!scope && isAgentsFile)
+        problems.push(problem(file, line, 'AGENTS-3', `${id}: an AGENTS.md defines scoped ids only (${prefix}-<module>-1)`))
       if (!scope && !isAgentsFile && path.posix.basename(file) !== FAMILIES[prefix])
         problems.push(problem(file, line, 'AGENTS-3', `${id} belongs in docs/guidelines/${FAMILIES[prefix]}`))
       const scopeKey = scope && `${prefix}-${scope}`
@@ -149,7 +154,9 @@ function findSkillFileProblems(root, name) {
   return [
     ...(field('name') === name ? [] : [problem(file, 1, 'AGENTS-7', `front matter needs name: ${name}`)]),
     ...(field('description') ? [] : [problem(file, 1, 'AGENTS-7', 'front matter needs a description')]),
-    ...(lineCount <= MAX_SKILL_LINES ? [] : [problem(file, lineCount, 'AGENTS-7', `${lineCount} lines; a skill is at most ${MAX_SKILL_LINES}`)]),
+    ...(lineCount <= MAX_SKILL_LINES
+      ? []
+      : [problem(file, lineCount, 'AGENTS-7', `${lineCount} lines; a skill is at most ${MAX_SKILL_LINES}`)]),
   ]
 }
 
@@ -166,11 +173,15 @@ function findMirrorProblems(root, name) {
 export function findDocPathProblems(files) {
   return files.flatMap((file) => {
     if (file.startsWith('docs/'))
-      return DOCS_ALLOWED.some((it) => it.test(file)) ? [] : [problem(file, 1, 'DOC-1', 'docs/ holds only the allowlist in CONTRIBUTING.md § Documentation')]
+      return DOCS_ALLOWED.some((it) => it.test(file))
+        ? []
+        : [problem(file, 1, 'DOC-1', 'docs/ holds only the allowlist in CONTRIBUTING.md § Documentation')]
     if (!file.endsWith('.md')) return []
     if (!file.includes('/'))
       return ROOT_MARKDOWN.includes(file) ? [] : [problem(file, 1, 'DOC-1', `the root's Markdown is ${ROOT_MARKDOWN.join(', ')}`)]
-    return MARKDOWN_HOMES.some((it) => it.test(file)) ? [] : [problem(file, 1, 'AGENTS-11', 'a stray Markdown file; plans and notes stay out of the repo')]
+    return MARKDOWN_HOMES.some((it) => it.test(file))
+      ? []
+      : [problem(file, 1, 'AGENTS-11', 'a stray Markdown file; plans and notes stay out of the repo')]
   })
 }
 

@@ -42,13 +42,18 @@ let package = Package(
         .target(name: "ForetypeCore", exclude: agentGuides, swiftSettings: swiftSettings),
 
         // Model engines behind `Engine`, plus the consented model download.
-        .target(name: "ForetypeEngine", dependencies: ["ForetypeCore", "llama"], exclude: agentGuides, swiftSettings: swiftSettings),
+        .target(
+            name: "ForetypeEngine", dependencies: ["ForetypeCore", "llama"], exclude: agentGuides,
+            swiftSettings: swiftSettings),
 
         // AppKit, Accessibility and CGEvent adapters that implement the Core seams.
-        .target(name: "ForetypeMac", dependencies: ["ForetypeCore"], exclude: agentGuides, swiftSettings: swiftSettings),
+        .target(
+            name: "ForetypeMac", dependencies: ["ForetypeCore"], exclude: agentGuides, swiftSettings: swiftSettings),
 
         // Fakes for every Core seam. Linked only by test targets.
-        .target(name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], exclude: agentGuides, swiftSettings: swiftSettings),
+        .target(
+            name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], exclude: agentGuides,
+            swiftSettings: swiftSettings),
 
         .executableTarget(
             name: "ForetypeApp",
