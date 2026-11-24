@@ -1,0 +1,83 @@
+# XcodeGen spec for the end-to-end setup: Foretype.app built by Xcode from the same sources as the
+# SwiftPM executable, a TestHost.app with one field of every kind, and an XCUITest bundle.
+# Generate with ../scripts/e2e-build.sh; the .xcodeproj is not committed.
+name: Foretype
+options:
+  bundleIdPrefix: dev.foretype
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+packages:
+  Foretype:
+    path: ..
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY: YES
+    MACOSX_DEPLOYMENT_TARGET: "26.0"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+targets:
+  Foretype:
+    type: application
+    platform: macOS
+    sources:
+      - path: ../Sources/ForetypeApp
+    dependencies:
+      - package: Foretype
+        product: ForetypeCore
+      - package: Foretype
+        product: ForetypeEngine
+      - package: Foretype
+        product: ForetypeMac
+    settings:
+      base:
+        PRODUCT_NAME: Foretype
+        PRODUCT_BUNDLE_IDENTIFIER: dev.foretype.app
+        INFOPLIST_FILE: ../Support/Info.plist
+        CODE_SIGN_ENTITLEMENTS: ../Support/Foretype.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+  TestHost:
+    type: application
+    platform: macOS
+    sources:
+      - path: TestHost
+    settings:
+      base:
+        PRODUCT_NAME: TestHost
+        PRODUCT_BUNDLE_IDENTIFIER: dev.foretype.testhost
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSPrincipalClass: NSApplication
+        INFOPLIST_KEY_CFBundleDisplayName: Foretype TestHost
+  ForetypeUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources:
+      - path: ForetypeUITests
+    dependencies:
+      - target: Foretype
+      - target: TestHost
+        embed: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.foretype.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Foretype
+schemes:
+  Foretype:
+    build:
+      targets:
+        Foretype: all
+        TestHost: [run, test]
+    run:
+      config: Debug
+      environmentVariables:
+        FORETYPE_ENGINE: stub
+    test:
+      config: Debug
+      targets:
+        - ForetypeUITests
+      environmentVariables:
+        FORETYPE_ENGINE: stub
