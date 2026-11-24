@@ -4,6 +4,16 @@ Newest first. Foretype is pre-alpha, and this log says what is true on each date
 
 ## 2026-11-24
 
+### Accessibility spike: five real apps
+
+The throwaway spike app now shows ghost text at the caret and inserts it on Tab in TextEdit, Notes, Safari, Chrome and Slack on macOS 27.3. Mail was not tested (no account on the test Mac).
+
+- **Caret position:** exact in Safari, Chrome and Slack. TextEdit and Notes report the caret one line too high, so the app checks it against the previous character's position.
+- **Insertion:** setting the selected text through Accessibility works in TextEdit and Notes (about 130 ms). Safari, Chrome and Slack report success but insert nothing, so they get typed key events (about 255 ms in Safari). The app always reads the field back to confirm the text landed.
+- **Undo:** one ⌘Z removes exactly the insertion in TextEdit and Slack. In Notes and Safari it also removes what you typed, and Chrome undoes 20 characters at a time. Making undo clean everywhere is on the v0.1 list.
+- **Context:** nearby text was captured in every app, but it picks up unrelated text (other note titles, older Slack messages), so the real app reads a tighter area around the field.
+- **Signing:** the Accessibility grant survived 8 rebuilds, including the switch from the Command Line Tools to Xcode.
+
 ### Research and market scan
 
 We checked whether an LLM layer above the keyboard is possible. On iOS it is not, because there is no way to draw over or read the system keyboard. On Android it needs an Accessibility service or a keyboard of its own. On the desktop it works, through the Accessibility API. So Foretype starts on the Mac. Desktop autocomplete is crowded with solo builders, so the focus is answering from on-screen text, plus saved snippets, all local. Details are in [RESEARCH.md](RESEARCH.md).

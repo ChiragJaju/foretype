@@ -50,6 +50,13 @@
   },
   {
     "date": "2026-11-24",
+    "title": "P0: ghost text and Tab insert work in TextEdit, Notes, Safari, Chrome and Slack",
+    "detail": "Exact caret position in Safari, Chrome and Slack; a corrected position in TextEdit and Notes. Each app gets the insert method that actually lands, checked by reading the field back.",
+    "status": "done",
+    "area": "app"
+  },
+  {
+    "date": "2026-11-24",
     "title": "In progress: on-device model benchmark (MLX vs llama.cpp, Qwen3.5 0.8B / 2B)",
     "detail": "Measuring time to first token and suggestion quality on Apple Silicon to pick the runtime and model size.",
     "status": "in-progress",
