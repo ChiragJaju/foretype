@@ -137,14 +137,21 @@ jobs:
           node ../scripts/activity.mjs
           npm run build
 
-  app-lint:
-    name: App lint
+  # One macOS job: free macOS runners are scarce, so lint, build and test share one runner and cache.
+  app:
+    name: App lint, build and test
     needs: changes
     if: needs.changes.outputs.app == 'true'
     runs-on: macos-26
-    timeout-minutes: 15
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v5
+
+      - uses: actions/cache@v4
+        with:
+          path: app/.build
+          key: spm-${{ runner.os }}-${{ hashFiles('app/Package.swift', 'app/Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
 
       - name: Install SwiftLint
         run: |
@@ -158,51 +165,19 @@ jobs:
       - name: swift-format
         run: swift format lint --strict --recursive app/Sources app/Tests app/E2E app/Package.swift
 
-  app-build:
-    name: App build
-    needs: changes
-    if: needs.changes.outputs.app == 'true'
-    runs-on: macos-26
-    timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: app
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/cache@v4
-        with:
-          path: app/.build
-          key: spm-${{ runner.os }}-${{ hashFiles('app/Package.swift', 'app/Package.resolved') }}
-          restore-keys: spm-${{ runner.os }}-
-
       - name: Build every target
+        working-directory: app
         run: swift build
-
-  app-test:
-    name: App unit tests
-    needs: changes
-    if: needs.changes.outputs.app == 'true'
-    runs-on: macos-26
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/cache@v4
-        with:
-          path: app/.build
-          key: spm-${{ runner.os }}-${{ hashFiles('app/Package.swift', 'app/Package.resolved') }}
-          restore-keys: spm-${{ runner.os }}-
 
       # Every SwiftPM test target: none needs the Accessibility permission or a model download.
       - name: Unit tests
         run: app/scripts/test.sh
 
-  # Rollups: branch protection needs fixed names. Skipped jobs pass; failed or cancelled ones fail.
+  # Rollups: branch protection needs fixed names. Only success or skipped passes.
   lint:
     name: Lint
     if: always()
-    needs: [changes, site-lint, app-lint]
+    needs: [changes, site-lint, app]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -210,12 +185,15 @@ jobs:
           RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
           echo "needed jobs: $RESULTS"
-          case " $RESULTS " in *" failure "* | *" cancelled "*) exit 1 ;; esac
+          # Allowlist: a job that never got a runner reports "abandoned", not "failure".
+          for result in $RESULTS; do
+            case "$result" in success | skipped) ;; *) exit 1 ;; esac
+          done
 
   type-check:
     name: Type-check
     if: always()
-    needs: [changes, site-build, app-build]
+    needs: [changes, site-build, app]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -223,12 +201,15 @@ jobs:
           RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
           echo "needed jobs: $RESULTS"
-          case " $RESULTS " in *" failure "* | *" cancelled "*) exit 1 ;; esac
+          # Allowlist: a job that never got a runner reports "abandoned", not "failure".
+          for result in $RESULTS; do
+            case "$result" in success | skipped) ;; *) exit 1 ;; esac
+          done
 
   unit-tests:
     name: Unit tests
     if: always()
-    needs: [changes, app-test]
+    needs: [changes, app]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -236,4 +217,7 @@ jobs:
           RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
           echo "needed jobs: $RESULTS"
-          case " $RESULTS " in *" failure "* | *" cancelled "*) exit 1 ;; esac
+          # Allowlist: a job that never got a runner reports "abandoned", not "failure".
+          for result in $RESULTS; do
+            case "$result" in success | skipped) ;; *) exit 1 ;; esac
+          done
