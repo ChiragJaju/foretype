@@ -11,10 +11,7 @@
 
 [Website](https://foretype.vercel.app) · [Plan](docs/PLAN.md) · [Research](docs/RESEARCH.md) · [Dev log](docs/DEVLOG.md)
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.png">
-  <img alt="Foretype suggesting an answer in a text field" src="docs/assets/hero.png">
-</picture>
+![Foretype suggesting an answer in a text field](docs/assets/hero.png)
 
 </div>
 
