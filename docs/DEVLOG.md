@@ -4,6 +4,15 @@ Newest first. Foretype is pre-alpha, and this log says what is true on each date
 
 ## 2026-11-24
 
+### Open source, with guardrails
+
+The repository is public, and `main` only changes through a pull request that passes four required checks: `Repo checks`, `Lint`, `Type-check` and `Unit tests`. Pull requests from anyone but the maintainer also need the maintainer's approval.
+
+- **One rule book.** 130+ rules, each with an id (`PRIV-1`, `MOD-3`, `TEST-9`…), live in `docs/guidelines/`. A generated index shows which check enforces each one. `AGENTS.md` files tell coding agents which rules apply where they are working.
+- **Checks that guard the promises.** Network code may exist only in the model download, nothing may touch the clipboard, the frozen contracts change only with a written waiver, and docs must keep up with the code. Each check was seen to fail on a bad example before it was trusted.
+- **Fast by design.** The pre-commit hook runs only on staged files and finishes in about half a second. Heavier checks run before a push or in CI.
+- **First site tests.** Unit tests pin the core demo: typing "N" turns yes into no, and "F" turns Home into Office.
+
 ### MLX versus llama.cpp
 
 Same models (4-bit), same 20 cases, same plain continuation prompt.
