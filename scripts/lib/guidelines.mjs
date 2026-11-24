@@ -4,10 +4,10 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
-export const GENERATED_FILES = ['docs/guidelines/enforcement.md', 'docs/guidelines/rules-index.md']
+const GENERATED_FILES = ['docs/guidelines/enforcement.md', 'docs/guidelines/rules-index.md']
 export const INTRO_FILE = 'docs/guidelines/enforcement.intro.md'
 export const NOTES_FILE = 'docs/guidelines/enforcement-notes.json'
-export const TOOLS_FILE = 'docs/guidelines/tool-enforcement.json'
+const TOOLS_FILE = 'docs/guidelines/tool-enforcement.json'
 
 // `CODE-4`, or a module-scoped `MOD-core-1`.
 export const ID_PATTERN = '[A-Z]+(?:-[a-z][a-z0-9]*)?-\\d+'
@@ -26,7 +26,7 @@ export function listFiles(root, pathspecs) {
 }
 
 /** The files that may define rules: every guideline, then every AGENTS.md. */
-export function listSources(root) {
+function listSources(root) {
   const generated = new Set([...GENERATED_FILES, INTRO_FILE])
   const guidelines = listFiles(root, ['docs/guidelines/*.md']).filter((file) => !generated.has(file))
   const agents = listFiles(root, ['*AGENTS.md']).filter((file) => path.posix.basename(file) === 'AGENTS.md')
@@ -60,7 +60,7 @@ export function parseDefinitions(text) {
 }
 
 /** The first `# ` heading. */
-export function readTitle(text) {
+function readTitle(text) {
   return /^# (.+)$/m.exec(text)?.[1].trim() ?? ''
 }
 
@@ -73,7 +73,7 @@ export function readSources(root) {
 }
 
 /** The 1-based line of the first `"needle"` in a JSON text, or 1. */
-export function lineOfString(text, needle) {
+function lineOfString(text, needle) {
   const at = text.indexOf(`"${needle}"`)
   return at < 0 ? 1 : text.slice(0, at).split('\n').length
 }

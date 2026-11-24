@@ -7,7 +7,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { findStaleFiles } from './generate-guidelines.mjs'
-import { ID_PATTERN, listFiles, proseLines, readDeclarations, readNotes, readSources } from './lib/guidelines.mjs'
+import { ID_PATTERN, listFiles, NOTES_FILE, proseLines, readDeclarations, readNotes, readSources } from './lib/guidelines.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const POINTER = '@AGENTS.md'
@@ -199,7 +199,7 @@ function main() {
   const problems = [
     ...findFormProblems(sources),
     ...findIdProblems(sources),
-    ...findDeclarationProblems(readDeclarations(ROOT), readNotes(ROOT), definedIds, 'docs/guidelines/enforcement-notes.json'),
+    ...findDeclarationProblems(readDeclarations(ROOT), readNotes(ROOT), definedIds, NOTES_FILE),
     ...findPointerProblems(agentsFiles, readOrNull),
     ...findSkillProblems(ROOT),
     ...findDocPathProblems(files),

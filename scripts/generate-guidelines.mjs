@@ -13,13 +13,13 @@ const HEADER =
 const REVIEW = 'review'
 
 /** A Markdown table; `|` inside a cell is escaped. */
-export function renderTable(header, rows) {
+function renderTable(header, rows) {
   const line = (cells) => `| ${cells.map((cell) => cell.replaceAll('|', '\\|')).join(' | ')} |`
   return [line(header), line(header.map(() => '---')), ...rows.map(line)].join('\n')
 }
 
 /** Rule id → the sorted, de-duplicated names of what enforces it. */
-export function groupChecks(declarations) {
+function groupChecks(declarations) {
   const byId = new Map()
   for (const { id, check } of declarations) byId.set(id, [...new Set([...(byId.get(id) ?? []), check])].sort())
   return byId
@@ -31,7 +31,7 @@ function ruleRows(definitions, checksById, notes) {
 }
 
 /** rules-index.md: every id, the file that defines it, and what enforces it. */
-export function renderIndex({ sources, declarations }) {
+function renderIndex({ sources, declarations }) {
   const checksById = groupChecks(declarations)
   const rows = sources.flatMap(({ file, definitions }) =>
     definitions.map(({ id }) => [id, `\`${file}\``, (checksById.get(id) ?? []).join(', ') || REVIEW]),
@@ -50,7 +50,7 @@ ${renderTable(['Rule', 'Defined in', 'Enforced by'], rows)}
 }
 
 /** enforcement.md: the hand-written intro, the tools, then one table per rule file. */
-export function renderEnforcement({ intro, sources, declarations, notes, tools }) {
+function renderEnforcement({ intro, sources, declarations, notes, tools }) {
   const checksById = groupChecks(declarations)
   const toolRows = Object.entries(tools).map(([tool, { runsIn, rules }]) => [
     tool,
@@ -78,7 +78,7 @@ ${sections.join('\n\n')}
 }
 
 /** Every generated file and its content. */
-export function renderAll(root) {
+function renderAll(root) {
   const sources = readSources(root)
   const declarations = readDeclarations(root)
   const intro = readFileSync(path.join(root, INTRO_FILE), 'utf8')
