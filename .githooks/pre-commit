@@ -1,0 +1,37 @@
+#!/bin/sh
+# Blocks big files and secrets, then formats and lints only the staged files.
+# Formatting re-adds whole files, so stage a file fully before committing it.
+set -eu
+
+MAX_FILE_BYTES=1048576
+LOCKFILES='^(site/)?package-lock\.json$'
+
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+[ -n "$staged" ] || exit 0
+
+printf '%s\n' "$staged" | while IFS= read -r path; do
+  printf '%s\n' "$path" | grep -qE "$LOCKFILES" && continue
+  size="$(git cat-file -s ":$path")"
+  [ "$size" -le "$MAX_FILE_BYTES" ] && continue
+  echo "pre-commit: $path is $size bytes, over the 1 MB limit"
+  exit 1
+done || exit 1
+
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --staged --redact --no-banner --log-level warn .
+else
+  echo "pre-commit: gitleaks not installed, secret scan skipped (brew install gitleaks)"
+fi
+
+swift_files="$(printf '%s\n' "$staged" | grep -E '^app/.*\.swift$' || true)"
+if [ -n "$swift_files" ]; then
+  printf '%s\n' "$swift_files" | tr '\n' '\0' | xargs -0 swift format --in-place
+  printf '%s\n' "$swift_files" | tr '\n' '\0' | xargs -0 git add --
+  printf '%s\n' "$swift_files" | tr '\n' '\0' | xargs -0 swiftlint lint --strict --quiet
+fi
+
+site_files="$(printf '%s\n' "$staged" | grep -E '^(site/src|scripts)/.*\.(js|mjs|ts|tsx|css|json)$' || true)"
+if [ -n "$site_files" ]; then
+  printf '%s\n' "$site_files" | tr '\n' '\0' | xargs -0 npx --no-install oxfmt
+  printf '%s\n' "$site_files" | tr '\n' '\0' | xargs -0 git add --
+fi
