@@ -1,0 +1,3 @@
+# Formatting-only changes. GitHub reads this file; locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
+# swift-format and oxfmt first pass (squashed into the tooling PR).
+e6234796698b42c7c61d8a190000e0562ac228ae
