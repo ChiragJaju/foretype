@@ -11,9 +11,16 @@ let package = Package(
     platforms: [.macOS(.v26)],
     products: [
         .library(name: "ForetypeCore", targets: ["ForetypeCore"]),
+        .library(name: "ForetypeTestSupport", targets: ["ForetypeTestSupport"]),
     ],
     targets: [
         // Pure Swift: value types, every seam protocol, and the suggestion logic. No AppKit.
         .target(name: "ForetypeCore", swiftSettings: swiftSettings),
+
+        // Fakes for every Core seam. Linked only by test targets.
+        .target(name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], swiftSettings: swiftSettings),
+
+        .testTarget(name: "ForetypeCoreTests", dependencies: ["ForetypeCore", "ForetypeTestSupport"], swiftSettings: swiftSettings),
+        .testTarget(name: "ForetypeTestSupportTests", dependencies: ["ForetypeTestSupport"], swiftSettings: swiftSettings),
     ]
 )
