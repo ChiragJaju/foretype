@@ -4,6 +4,19 @@ Newest first. Foretype is pre-alpha, and this log says what is true on each date
 
 ## 2026-11-24
 
+### MLX versus llama.cpp
+
+Same models (4-bit), same 20 cases, same plain continuation prompt.
+
+| | MLX | llama.cpp |
+|---|---|---|
+| First word after a keystroke, p50 | 6–8 ms | 7–10 ms |
+| Focus to first word, p50 | 54–103 ms | 70–135 ms |
+| Peak RAM | 2.2–3.0 GB | 0.7–1.5 GB |
+| Load to first word | 393–516 ms | 315–445 ms |
+
+Quality is tied within noise. MLX reads context 15–35% faster but peaks at about twice the memory, so **llama.cpp stays the default** and MLX stays an alternate engine behind the same interface. We will measure again if MLX's prefill memory improves.
+
 ### Model spike: speed and quality pass
 
 20 realistic reply cases (email, Slack, scheduling, yes/no, form fields), each rated GOOD (accept as is), OK (right idea, needs edits) or BAD. Latency in milliseconds, p50 / p95, on an Apple M5 Pro.
