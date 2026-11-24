@@ -1,4 +1,4 @@
-// Copy shared by both draft designs.
+// Long-form copy kept out of the components.
 export const QUESTIONS = [
   {
     q: 'How does it see what is on my screen?',

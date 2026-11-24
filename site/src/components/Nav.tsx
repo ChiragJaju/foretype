@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { Moon, Sun } from 'lucide-react'
 import { useState } from 'react'
+import { useRepoLink } from '../lib/activity'
 import { useTheme } from '../lib/theme'
 import { Magnetic } from './Magnetic'
 
@@ -8,6 +9,7 @@ const LINKS = [
   { href: '#how', label: 'How it works' },
   { href: '#try', label: 'Try it' },
   { href: '#privacy', label: 'Privacy' },
+  { href: '#build-log', label: 'Build log' },
   { href: '#android', label: 'Android' },
 ]
 
@@ -55,6 +57,23 @@ function ThemeToggle() {
   )
 }
 
+function SourceLink() {
+  const { repoPublic, ...link } = useRepoLink()
+  if (repoPublic) {
+    return (
+      <a {...link} className="transition-colors hover:text-ink">
+        GitHub
+      </a>
+    )
+  }
+  return (
+    <a {...link} title="Source opens with the beta" className="flex items-center gap-1.5 transition-colors hover:text-ink">
+      Source
+      <span className="rounded bg-bg-3 px-1 py-px font-mono text-[10px] tracking-wider text-ink-3 uppercase">beta</span>
+    </a>
+  )
+}
+
 export function Nav() {
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
@@ -74,6 +93,7 @@ export function Nav() {
               {link.label}
             </a>
           ))}
+          <SourceLink />
         </div>
         <div className="flex items-center gap-2.5">
           <ThemeToggle />

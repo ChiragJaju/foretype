@@ -26,6 +26,12 @@
   --ring: 0 0 0 1px var(--line), 0 1px 2px rgb(20 19 17 / 0.04), 0 8px 24px -12px rgb(20 19 17 / 0.12);
   --screen: 0 0 0 1px var(--line), 0 2px 4px rgb(20 19 17 / 0.03), 0 24px 60px -24px rgb(20 19 17 / 0.22);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Build log areas: categorical slots 1-5, validated for adjacent-pair CVD separation in both themes. */
+  --area-app: #2a78d6;
+  --area-engine: #eb6834;
+  --area-site: #1baf7a;
+  --area-docs: #eda100;
+  --area-infra: #e87ba4;
   color-scheme: light;
 }
 
@@ -52,6 +58,11 @@
   --key-glow: rgb(125 140 255 / 0.55);
   --ring: 0 0 0 1px var(--line), 0 8px 24px -12px rgb(0 0 0 / 0.6);
   --screen: 0 0 0 1px var(--line-2), 0 24px 80px -24px rgb(0 0 0 / 0.8), 0 0 120px -40px rgb(125 140 255 / 0.25);
+  --area-app: #3987e5;
+  --area-engine: #d95926;
+  --area-site: #199e70;
+  --area-docs: #c98500;
+  --area-infra: #d55181;
   color-scheme: dark;
 }
 
@@ -76,6 +87,11 @@
   --color-band-ink: var(--band-ink);
   --color-band-ink-2: var(--band-ink-2);
   --color-band-line: var(--band-line);
+  --color-area-app: var(--area-app);
+  --color-area-engine: var(--area-engine);
+  --color-area-site: var(--area-site);
+  --color-area-docs: var(--area-docs);
+  --color-area-infra: var(--area-infra);
   --shadow-ring: var(--ring);
   --shadow-screen: var(--screen);
   --ease-out: var(--ease-out);

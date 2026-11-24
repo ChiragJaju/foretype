@@ -1,0 +1,58 @@
+[
+  {
+    "date": "2026-11-24",
+    "title": "Research: why desktop first",
+    "detail": "On a Mac one app can read the focused field and type into any other; phone keyboards cannot see the screen.",
+    "status": "done",
+    "area": "docs"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "Landing site live (two designs, merged)",
+    "detail": "Two directions built side by side, then merged into the one you are reading.",
+    "status": "done",
+    "area": "site"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "Build plan written and independently reviewed — 6 wrong assumptions fixed",
+    "detail": "A second reviewer checked every claim in the plan; six were wrong and are now corrected.",
+    "status": "done",
+    "area": "docs"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "Toolchain: Xcode 27.2 + Swift 6.4",
+    "detail": "The app builds from the command line with the current Xcode and Swift releases.",
+    "status": "done",
+    "area": "infra"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "P0: self-signed signing keeps the Accessibility grant across rebuilds on macOS 27",
+    "detail": "A stable local signing identity means you grant Accessibility once, not after every build.",
+    "status": "done",
+    "area": "app"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "P0: Accessibility alone covers both keyboard taps",
+    "detail": "Watching keys and catching Tab need no extra Input Monitoring permission.",
+    "status": "done",
+    "area": "app"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "P0: TextEdit insert via Accessibility in ~136 ms with clean undo",
+    "detail": "Accepted text lands in the field as one edit, and a single undo removes it.",
+    "status": "done",
+    "area": "app"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "In progress: on-device model benchmark (MLX vs llama.cpp, Qwen3.5 0.8B / 2B)",
+    "detail": "Measuring time to first token and suggestion quality on Apple Silicon to pick the runtime and model size.",
+    "status": "in-progress",
+    "area": "engine"
+  }
+]

@@ -1,7 +1,7 @@
 import { Android } from './components/Android'
 import { Apps } from './components/Apps'
+import { BuildLog } from './components/BuildLog'
 import { Cursor } from './components/Cursor'
-import { DesignSwitch } from './components/DesignSwitch'
 import { Faq } from './components/Faq'
 import { Hero } from './components/Hero'
 import { HowItWorks } from './components/HowItWorks'
@@ -25,12 +25,12 @@ export default function App() {
         <Playground />
         <Numbers />
         <Privacy />
+        <BuildLog />
         <Android />
         <Faq />
         <Waitlist />
       </main>
       <Footer />
-      <DesignSwitch current="a" />
     </>
   )
 }

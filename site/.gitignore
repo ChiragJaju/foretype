@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+
+# Regenerated from git history by scripts/activity.mjs at deploy time
+public/activity.json

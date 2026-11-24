@@ -9,7 +9,7 @@ const STATS = [
   { value: 1, prefix: '', suffix: ' key', label: 'to take a suggestion. Keep typing to ignore it.', note: 'Tab' },
 ]
 
-function CountUp({ to }: { to: number }) {
+export function CountUp({ to }: { to: number }) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true })
   const [shown, setShown] = useState(0)

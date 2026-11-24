@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useInView } from 'motion/react'
 import { ArrowUpRight, Cloud, Code, Cpu, EyeOff, ShieldBan, WifiOff } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { useRepoLink } from '../lib/activity'
 import { Reveal } from './Reveal'
 
 const POINTS = [
@@ -84,6 +85,29 @@ function NetworkLog() {
   )
 }
 
+const SOURCE_CARD_COPY = {
+  public: { title: 'Read the code on GitHub', body: 'Star the repo to follow along, or build it yourself.' },
+  private: { title: 'The source goes public with the beta', body: 'Join the waitlist to get the repo link first.' },
+}
+
+function SourceCard() {
+  const { repoPublic, ...link } = useRepoLink()
+  const copy = repoPublic ? SOURCE_CARD_COPY.public : SOURCE_CARD_COPY.private
+  return (
+    <a
+      id="open-source"
+      {...link}
+      className="group flex items-center justify-between rounded-2xl border border-band-line px-5 py-4 transition-colors hover:bg-band-2"
+    >
+      <span>
+        <span className="block text-[15px] font-medium">{copy.title}</span>
+        <span className="text-[13.5px] text-band-ink-2">{copy.body}</span>
+      </span>
+      <ArrowUpRight size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+    </a>
+  )
+}
+
 export function Privacy() {
   return (
     <section id="privacy" className="px-3 sm:px-4">
@@ -115,17 +139,7 @@ export function Privacy() {
             </div>
             <Reveal delay={0.15} className="flex flex-col gap-4">
               <NetworkLog />
-              <a
-                id="open-source"
-                href="#waitlist"
-                className="group flex items-center justify-between rounded-2xl border border-band-line px-5 py-4 transition-colors hover:bg-band-2"
-              >
-                <span>
-                  <span className="block text-[15px] font-medium">The source goes public with the beta</span>
-                  <span className="text-[13.5px] text-band-ink-2">Join the waitlist to get the repo link first.</span>
-                </span>
-                <ArrowUpRight size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
+              <SourceCard />
             </Reveal>
           </div>
         </div>

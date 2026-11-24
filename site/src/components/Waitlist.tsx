@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { ArrowRight, Check } from 'lucide-react'
 import { useState } from 'react'
+import { useRepoLink } from '../lib/activity'
 import { emailGhost } from '../lib/predict'
 import { Logo } from './Nav'
 import { Magnetic } from './Magnetic'
@@ -110,14 +111,17 @@ export function Waitlist() {
 }
 
 export function Footer() {
+  const { repoPublic, ...sourceLink } = useRepoLink()
   return (
     <footer className="overflow-hidden px-4 pt-10 sm:px-6">
       <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-4 border-t border-line pt-6 text-[13.5px] text-ink-2">
         <Logo />
-        <nav className="flex gap-6">
+        <nav className="flex flex-wrap gap-x-6 gap-y-2">
           <a href="#how" className="hover:text-ink">How it works</a>
           <a href="#privacy" className="hover:text-ink">Privacy</a>
+          <a href="#build-log" className="hover:text-ink">Build log</a>
           <a href="#android" className="hover:text-ink">Android</a>
+          <a {...sourceLink} className="hover:text-ink">{repoPublic ? 'GitHub' : 'Source opens with the beta'}</a>
         </nav>
         <span>© 2026 Foretype</span>
       </div>
