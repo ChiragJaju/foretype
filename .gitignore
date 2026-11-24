@@ -11,3 +11,7 @@ DerivedData/
 models/
 *.gguf
 *.safetensors
+
+# app
+app/build/
+app/E2E/*.xcodeproj/
