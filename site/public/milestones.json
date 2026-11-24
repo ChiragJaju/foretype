@@ -1,72 +1,58 @@
 [
   {
     "date": "2026-11-24",
-    "title": "Research: why desktop first",
-    "detail": "On a Mac one app can read the focused field and type into any other; phone keyboards cannot see the screen.",
+    "title": "Research: desktop first",
+    "detail": "Phone keyboards cannot see the screen, but on a Mac one app can read the field you are in and type into any other. So Foretype starts on the Mac, with a plan a second reviewer checked.",
     "status": "done",
     "area": "docs"
   },
   {
     "date": "2026-11-24",
-    "title": "Landing site live (two designs, merged)",
-    "detail": "Two directions built side by side, then merged into the one you are reading.",
+    "title": "Landing site live",
+    "detail": "Two designs built side by side, merged into the one you are reading, with this build log fed straight from the repository.",
     "status": "done",
     "area": "site"
   },
   {
     "date": "2026-11-24",
-    "title": "Build plan written and independently reviewed — 6 wrong assumptions fixed",
-    "detail": "A second reviewer checked every claim in the plan; six were wrong and are now corrected.",
-    "status": "done",
-    "area": "docs"
-  },
-  {
-    "date": "2026-11-24",
-    "title": "Toolchain: Xcode 27.2 + Swift 6.4",
-    "detail": "The app builds from the command line with the current Xcode and Swift releases.",
-    "status": "done",
-    "area": "infra"
-  },
-  {
-    "date": "2026-11-24",
-    "title": "P0: self-signed signing keeps the Accessibility grant across rebuilds on macOS 27",
-    "detail": "A stable local signing identity means you grant Accessibility once, not after every build.",
-    "status": "done",
-    "area": "app"
-  },
-  {
-    "date": "2026-11-24",
-    "title": "P0: Accessibility alone covers both keyboard taps",
-    "detail": "Watching keys and catching Tab need no extra Input Monitoring permission.",
-    "status": "done",
-    "area": "app"
-  },
-  {
-    "date": "2026-11-24",
-    "title": "P0: TextEdit insert via Accessibility in ~136 ms with clean undo",
-    "detail": "Accepted text lands in the field as one edit, and a single undo removes it.",
-    "status": "done",
-    "area": "app"
-  },
-  {
-    "date": "2026-11-24",
-    "title": "P0: ghost text and Tab insert work in TextEdit, Notes, Safari, Chrome and Slack",
-    "detail": "Exact caret position in Safari, Chrome and Slack; a corrected position in TextEdit and Notes. Each app gets the insert method that actually lands, checked by reading the field back.",
-    "status": "done",
-    "area": "app"
-  },
-  {
-    "date": "2026-11-24",
-    "title": "P0: on-device model passes the speed and quality bar",
-    "detail": "First suggested word in about 7 ms once a field is focused, and about 105 ms including reading the context. 18 of 20 test replies rated good or OK with a 1.5B model on llama.cpp. Apple's built-in model stays as the no-download fallback.",
+    "title": "Feasibility proven: Accessibility + on-device model",
+    "detail": "Suggestions appear at the cursor and drop in with Tab in TextEdit, Notes, Safari, Chrome and Slack. A small model on the Mac offers the first word in about 7 ms, and 18 of 20 test replies were good enough to keep.",
     "status": "done",
     "area": "engine"
   },
   {
     "date": "2026-11-24",
-    "title": "Next: freeze the app's core types and build modules in parallel",
-    "detail": "Core, engine, macOS adapters and the app UI get built side by side against one agreed contract.",
+    "title": "App skeleton with frozen contracts",
+    "detail": "The menu-bar app, the model engine and the Mac plumbing now share one fixed set of shapes, so each part can be built and tested on its own.",
+    "status": "done",
+    "area": "app"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "Guardrails: rules, checks and CI",
+    "detail": "Every change is formatted, linted, scanned for secrets and built and tested on a Mac before it lands. A privacy check keeps the app off the network, apart from the one model download.",
+    "status": "done",
+    "area": "infra"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "Open source: repo public",
+    "detail": "The code, the plan and the research notes are public on GitHub under the MIT license, with guides for anyone who wants to help.",
+    "status": "done",
+    "area": "docs"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "The Mac app, end to end",
+    "detail": "Filling in the skeleton: reading the field, suggesting, showing the grey text and inserting it, then a first build you can download.",
     "status": "in-progress",
+    "area": "app"
+  },
+  {
+    "date": "2026-11-24",
+    "title": "An Android keyboard",
+    "detail": "The same on-device model inside a keyboard of its own, so sloppy swipes and taps still land on the word you meant.",
+    "status": "planned",
     "area": "app"
   }
 ]

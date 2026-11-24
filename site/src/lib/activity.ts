@@ -24,12 +24,15 @@ export type Activity = {
   daily: DailyActivity[]
   latest: LatestCommit[]
 }
-export type Milestone = { date: string; title: string; detail: string; status: 'done' | 'in-progress'; area: Area }
+export const MILESTONE_STATUSES = ['done', 'in-progress', 'planned'] as const
+export type MilestoneStatus = (typeof MILESTONE_STATUSES)[number]
+export type Milestone = { date: string; title: string; detail: string; status: MilestoneStatus; area: Area }
 
 type Remote<T> = { status: 'loading' } | { status: 'ready'; data: T } | { status: 'unavailable'; error: Error }
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
 const isArea = (value: unknown): value is Area => AREAS.some((area) => area === value)
+const isMilestoneStatus = (value: unknown): value is MilestoneStatus => MILESTONE_STATUSES.some((status) => status === value)
 
 function isDailyActivity(value: unknown): value is DailyActivity {
   if (!isRecord(value) || typeof value.date !== 'string' || typeof value.commits !== 'number') return false
@@ -51,7 +54,7 @@ function isActivity(value: unknown): value is Activity {
 function isMilestone(value: unknown): value is Milestone {
   if (!isRecord(value) || !isArea(value.area)) return false
   const hasText = [value.date, value.title, value.detail].every((field) => typeof field === 'string')
-  return hasText && (value.status === 'done' || value.status === 'in-progress')
+  return hasText && isMilestoneStatus(value.status)
 }
 
 const isMilestoneList = (value: unknown): value is Milestone[] => Array.isArray(value) && value.every(isMilestone)
