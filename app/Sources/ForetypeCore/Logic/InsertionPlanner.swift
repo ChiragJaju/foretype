@@ -1,4 +1,4 @@
-// Slice A. The public signatures below are frozen (app/CONTRACTS.md); the bodies are yours.
+// Slice A. The public signatures below are frozen (docs/guides/contracts.md); the bodies are yours.
 
 /// Picks the insertion ladder per host. AppKit: AX first, then Unicode. WebKit, Chromium, Electron:
 /// Unicode only (their AX write is a silent no-op). Text with a leading space in a Cocoa text view

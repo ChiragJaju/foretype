@@ -1,4 +1,4 @@
-// FROZEN CONTRACT. Owned by the orchestrator. See app/CONTRACTS.md before changing anything here.
+// FROZEN CONTRACT. Owned by the orchestrator. See docs/guides/contracts.md before changing anything here.
 
 public struct KeyModifiers: OptionSet, Sendable, Hashable {
     public let rawValue: UInt8

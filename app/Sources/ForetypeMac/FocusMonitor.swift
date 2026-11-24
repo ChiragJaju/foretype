@@ -1,4 +1,4 @@
-// Slice C. The public signatures are frozen (app/CONTRACTS.md); the bodies are yours.
+// Slice C. The public signatures are frozen (docs/guides/contracts.md); the bodies are yours.
 
 import ForetypeCore
 

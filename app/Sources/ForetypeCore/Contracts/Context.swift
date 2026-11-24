@@ -1,4 +1,4 @@
-// FROZEN CONTRACT. Owned by the orchestrator. See app/CONTRACTS.md before changing anything here.
+// FROZEN CONTRACT. Owned by the orchestrator. See docs/guides/contracts.md before changing anything here.
 
 /// Hard caps on what is read from the screen. The reader stops at these; `ContextBuilder` enforces
 /// them again before anything reaches the prompt.

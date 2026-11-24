@@ -1,11 +1,11 @@
 # Coder brief: P2 slices
 
-Four slices build in parallel, each in its own git worktree, against the frozen contracts. Read [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) first (threading model, cancellation rules, privacy map), then [docs/PLAN.md](../docs/PLAN.md).
+Four slices build in parallel, each in its own git worktree, against the frozen contracts. Read [architecture.md](../architecture.md) first (threading model, cancellation rules, privacy map), then [PLAN.md](../PLAN.md). Paths below are relative to `app/`.
 
 ## Rules for every slice
 
 1. Edit only the files your slice owns. You may add new files inside your own folders. Nothing else.
-2. Shared files are orchestrator-owned: `Package.swift`, everything in `Sources/ForetypeCore/Contracts/`, `Sources/ForetypeMac/Threading.swift`, `Sources/ForetypeTestSupport/`, `E2E/`, `scripts/`, `Support/`, `.github/`, `docs/`, this file.
+2. Shared files are orchestrator-owned: `Package.swift`, everything in `Sources/ForetypeCore/Contracts/`, `Sources/ForetypeMac/Threading.swift`, `Sources/ForetypeTestSupport/`, `E2E/`, `scripts/`, `Support/`, `.github/`, `docs/`, this file (`docs/guides/contracts.md`).
 3. Frozen means: no renames, removals or signature changes to any `public` declaration in a shared file, or to the frozen entry points listed per slice below. Additive public API in your own files is fine (for example an extra initializer that injects a key). If you need a contract change (a new case, a new field, a new fake), stop and write the request (what, why, who else it touches) to the orchestrator. Do not work around a contract with a cast or a side channel.
 4. Code against the protocols and the fakes in `ForetypeTestSupport`, never against another slice's concrete type. The only place concrete types meet is `ForetypeApp/AppComposition.swift` (slice D).
 5. No new package dependencies. Ask first.
@@ -13,6 +13,10 @@ Four slices build in parallel, each in its own git worktree, against the frozen 
 7. Placeholders in the scaffold return safe empty values. Replace them; do not leave a placeholder in a file you shipped.
 8. Run only your own tests while working: `./scripts/test.sh --filter <YourTestTarget>`. Swift Testing for unit tests. A test pins a named risk and asserts an outcome, never that a fake was called for its own sake.
 9. Conventional Commits, small. Finish on a committed branch; the orchestrator merges.
+
+## Changing a contract
+
+A change to a file in `Sources/ForetypeCore/Contracts/`, to `Sources/ForetypeMac/Threading.swift`, or to a frozen entry point below lands in its own PR. The PR body and one commit message carry `CONTRACT-CHANGE(<reason>)`, and the PR updates this guide (MOD-3 and MOD-6 in [modules.md](../guidelines/modules.md)).
 
 ## Slice A: Core logic and tests
 
