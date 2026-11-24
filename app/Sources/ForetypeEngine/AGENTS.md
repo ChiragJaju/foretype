@@ -32,7 +32,7 @@ the exact ghost text.
 
 | Need | Exemplar |
 | --- | --- |
-| An `Engine` that streams and honours cancellation | `ForetypeTestSupport/FakeEngine.swift` |
+| An `Engine` that streams and honours cancellation | `../ForetypeTestSupport/FakeEngine.swift` |
 | A pinned download (URL plus checksum, bumped together) | the `llama` binary target in `app/Package.swift` |
 
 ## Commands

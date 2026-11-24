@@ -6,7 +6,7 @@ bootstrap:
 	cd site && npm ci
 	git config core.hooksPath .githooks
 	@if command -v brew >/dev/null 2>&1; then brew bundle --file=Brewfile; \
-	else echo "Install swiftlint, gitleaks and xcodegen (Homebrew: brew bundle --file=Brewfile)."; fi
+	else echo "Install the tools in Brewfile (Homebrew: brew bundle --file=Brewfile)."; fi
 	@./scripts/doctor.sh
 
 verify:
@@ -28,6 +28,7 @@ lint:
 
 test:
 	app/scripts/test.sh
+	cd site && npm test
 
 site-dev:
 	cd site && npm run dev

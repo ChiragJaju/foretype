@@ -1,5 +1,4 @@
 ---
-description: When editing the site, follow the site and UI guidelines
 paths:
   - 'site/**'
 ---

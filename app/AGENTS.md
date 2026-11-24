@@ -19,7 +19,7 @@ mode) that builds the menu-bar app `Foretype`, the eval harness
 | `Tests/`, `E2E/` | unit tests per module; the XcodeGen spec, `TestHost.app` and XCUITest bundle | `docs/guidelines/testing.md` |
 
 Which module may import which is `docs/guidelines/modules.md` (MOD-1, MOD-2).
-`Package.swift`, `Contracts/`, `ForetypeMac/Threading.swift`, `Support/` and
+`Package.swift`, `Contracts/`, `Sources/ForetypeMac/Threading.swift`, `Support/` and
 `scripts/` are shared: change them only in a PR about them (MOD-3, MOD-6).
 
 ## Guidelines
@@ -36,7 +36,7 @@ Run from `app/`.
 swift build
 ./scripts/test.sh                              # all unit tests, no permissions needed
 ./scripts/test.sh --filter ForetypeCoreTests   # one target while you work
-./scripts/privacy-check.sh                     # PRIV-1, PRIV-2
+node ../scripts/check-imports.mjs              # MOD-1, MOD-2, PRIV-1, PRIV-2
 ./scripts/dev-sign.sh                          # once: local signing identity
 ./scripts/bundle.sh                            # build/Foretype.app, signed
 ./scripts/e2e-build.sh                         # XcodeGen + build-for-testing (local only)
@@ -44,6 +44,6 @@ swift build
 
 ## Before you finish
 
-- [ ] `./scripts/test.sh --filter <YourTestTarget>` and `./scripts/privacy-check.sh` pass.
+- [ ] `./scripts/test.sh --filter <YourTestTarget>` and `node ../scripts/check-imports.mjs` pass.
 - [ ] A UI change ran `/app-ui-verify`.
 - [ ] `make verify` from the repo root is green.

@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 // The one local runner of the CI checks: `node scripts/verify.mjs [--tier repo|fast|full] [--changed] [--list]`.
-// Tiers nest: repo (scripts/check-*.mjs, node tests, privacy grep) < fast (+ lint) < full (+ type-check, build, tests).
+// Tiers nest: repo (scripts/check-*.mjs, node tests, repo linters) < fast (+ Swift and site lint) < full (+ type-check,
+// build, tests).
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { listFiles } from './lib/guidelines.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TIERS = ['repo', 'fast', 'full']
@@ -14,6 +17,11 @@ const FORMATTED_PATHS = ['site/src', 'scripts']
 const SWIFT_FILE = /^app\/.*\.swift$/
 const FORMATTED_FILE = /^(site\/src|scripts)\/.*\.(js|mjs|ts|tsx|css|json)$/
 const LINTED_SITE_FILE = /^site\/src\/.*\.(ts|tsx)$/
+const SITE_FILE = /^site\//
+const SHELL_FILE = /\.sh$|^\.githooks\//
+const WORKFLOW_FILE = /^\.github\/workflows\/[^/]+\.ya?ml$/
+const AGENT_FILE = /(?:^|\/)(?:AGENTS|CLAUDE|SKILL)\.md$|^\.claude\//
+const ANY_FILE = /./
 const USAGE = 'usage: node scripts/verify.mjs [--tier repo|fast|full] [--changed] [--list]'
 const USAGE_EXIT_CODE = 2
 
@@ -38,7 +46,7 @@ function changedFiles() {
   return { base, files }
 }
 
-function repoChecks() {
+function repoChecks(files) {
   const scriptsDir = resolve(ROOT, 'scripts')
   const names = readdirSync(scriptsDir).filter((name) => /^check-.+\.mjs$/.test(name) && !name.endsWith('.test.mjs'))
   const checks = names.map((name) => {
@@ -49,8 +57,7 @@ function repoChecks() {
   })
   const tests = readdirSync(scriptsDir).filter((name) => name.endsWith('.test.mjs'))
   if (tests.length > 0) checks.push({ label: 'node tests', argv: ['node', '--test', ...tests.map((name) => `scripts/${name}`)] })
-  checks.push({ label: 'privacy check', argv: ['app/scripts/privacy-check.sh'] })
-  return checks
+  return [...checks, ...repoLintSteps(files)]
 }
 
 /** One lint step over the changed files of a kind, or over all of them when not --changed. */
@@ -59,6 +66,24 @@ function scoped(label, argvForAll, argvForFiles, files, pattern) {
   const matching = files.filter((file) => pattern.test(file))
   if (matching.length === 0) return { label, skip: 'no changed files' }
   return { label, argv: argvForFiles(matching) }
+}
+
+/** Fast linters over repo files; each runs only when a file of its kind changed. */
+function repoLintSteps(files) {
+  const shellFiles = listFiles(ROOT, ['*.sh', '.githooks/*']).filter((file) => SHELL_FILE.test(file))
+  return [
+    scoped('shellcheck', ['shellcheck', ...shellFiles], (paths) => ['shellcheck', ...paths], files, SHELL_FILE),
+    scoped('typos', ['typos'], (paths) => ['typos', '--force-exclude', '--', ...paths], files, ANY_FILE),
+    scoped('actionlint', ['actionlint'], (paths) => ['actionlint', ...paths], files, WORKFLOW_FILE),
+    scoped('zizmor', ['zizmor', '--offline', '.github/workflows'], (paths) => ['zizmor', '--offline', ...paths], files, WORKFLOW_FILE),
+    scoped(
+      'agnix',
+      ['npx', '--no-install', 'agnix', '--strict', '.'],
+      (paths) => ['npx', '--no-install', 'agnix', '--strict', ...paths],
+      files,
+      AGENT_FILE,
+    ),
+  ]
 }
 
 function lintSteps(files) {
@@ -88,13 +113,15 @@ function lintSteps(files) {
     {
       ...scoped(
         'oxlint',
-        ['npx', '--no-install', 'oxlint'],
-        (paths) => ['npx', '--no-install', 'oxlint', ...siteRelative(paths)],
+        ['npx', '--no-install', 'oxlint', '--type-aware', '--deny-warnings'],
+        (paths) => ['npx', '--no-install', 'oxlint', '--type-aware', '--deny-warnings', ...siteRelative(paths)],
         files,
         LINTED_SITE_FILE,
       ),
       cwd: 'site',
     },
+    // knip reads the whole site graph, so any site change runs it on all of it.
+    { ...scoped('knip', ['npx', '--no-install', 'knip'], () => ['npx', '--no-install', 'knip'], files, SITE_FILE), cwd: 'site' },
   ]
 }
 
@@ -103,6 +130,7 @@ function fullSteps() {
     { label: 'site type-check', argv: ['npx', '--no-install', 'tsc', '-b'], cwd: 'site' },
     { label: 'swift build', argv: ['swift', 'build'], cwd: 'app' },
     { label: 'app unit tests', argv: ['app/scripts/test.sh'] },
+    { label: 'site unit tests', argv: ['npm', 'test'], cwd: 'site' },
   ]
 }
 
@@ -127,7 +155,7 @@ function main() {
   const scope = args.changed ? changedFiles() : null
   const env = scope ? { ...process.env, VERIFY_BASE: scope.base } : process.env
   const depth = TIERS.indexOf(args.tier)
-  const steps = [...repoChecks(), ...(depth >= 1 ? lintSteps(scope?.files) : []), ...(depth >= 2 ? fullSteps() : [])]
+  const steps = [...repoChecks(scope?.files), ...(depth >= 1 ? lintSteps(scope?.files) : []), ...(depth >= 2 ? fullSteps() : [])]
   const where = scope ? `${scope.files.length} changed files vs ${BASE_BRANCH}@${scope.base.slice(0, 7)}` : 'whole repo'
   console.log(`verify · tier ${args.tier} · ${where}`)
   if (args.list) {

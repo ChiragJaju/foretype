@@ -1,5 +1,4 @@
 ---
-description: When editing tests, fakes or the end-to-end harness, follow the testing guideline
 paths:
   - 'app/Tests/**'
   - 'app/E2E/**'

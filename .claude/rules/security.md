@@ -1,5 +1,4 @@
 ---
-description: When editing signing, entitlements, the bundle or the app scripts, follow the security guideline
 paths:
   - 'app/Support/**'
   - 'app/scripts/**'

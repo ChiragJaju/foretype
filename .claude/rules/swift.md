@@ -1,5 +1,4 @@
 ---
-description: When editing Swift in app/, follow the Swift, concurrency, privacy and observability guidelines
 paths:
   - 'app/**/*.swift'
 ---

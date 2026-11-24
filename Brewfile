@@ -1,3 +1,7 @@
 brew "swiftlint"
 brew "gitleaks"
 brew "xcodegen"
+brew "shellcheck"
+brew "typos-cli"
+brew "actionlint"
+brew "zizmor"

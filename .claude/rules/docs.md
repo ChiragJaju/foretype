@@ -1,5 +1,4 @@
 ---
-description: When editing docs, AGENTS.md files, skills or the rule files, follow the docs and agents guidelines
 paths:
   - '**/*.md'
   - 'docs/guidelines/*.json'
