@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // What each Swift module may reach for (docs/guidelines/modules.md, privacy.md): the target graph in Package.swift
 // against MOD-2, every `import` against its target's dependencies, Core's system imports, and the network,
-// clipboard and telemetry APIs the privacy rules forbid. Comments and strings are ignored.
+// clipboard and telemetry APIs the privacy rules forbid. Comments are ignored; strings too, except for the network
+// and clipboard APIs, which Swift interpolation and raw strings can call.
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -127,6 +128,7 @@ const hits = (masked, pattern) => [...masked.matchAll(pattern)].map((match) => (
 /** Import and API problems in one Swift file. `reachable` maps a target to the modules it may import. */
 export function findFileProblems(file, text, reachable, packageModules) {
   const masked = maskSource(text, { swift: true })
+  const withStrings = maskSource(text, { swift: true, keepStrings: true })
   const target = targetOf(file)
   const inCore = file.startsWith('app/Sources/ForetypeCore/')
   const inSources = file.startsWith('app/Sources/')
@@ -144,12 +146,12 @@ export function findFileProblems(file, text, reachable, packageModules) {
       found.push(finding(file, line, 'PRIV-1', `imports ${module}; the only network code is ${NETWORK_HOME}`))
     return found
   })
-  const network = inSources && file !== NETWORK_HOME ? hits(masked, NETWORK_API) : []
+  const network = inSources && file !== NETWORK_HOME ? hits(withStrings, NETWORK_API) : []
   const clock = inCore && file !== CLOCK_HOME ? hits(masked, WALL_CLOCK) : []
   return [
     ...problems,
     ...network.map(({ text: api, line }) => finding(file, line, 'PRIV-1', `${api} outside ${NETWORK_HOME}`)),
-    ...hits(masked, CLIPBOARD_API).map(({ text: api, line }) =>
+    ...hits(withStrings, CLIPBOARD_API).map(({ text: api, line }) =>
       finding(file, line, 'PRIV-2', `${api}: Foretype never touches the clipboard`),
     ),
     ...clock.map(({ text: api, line }) => finding(file, line, 'CONC-10', `${api} in ForetypeCore; read time through MonotonicClock`)),

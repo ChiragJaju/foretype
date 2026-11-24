@@ -31,6 +31,12 @@ test('a network API outside ModelStore.swift fails PRIV-1; a comment naming it d
   assert.deepEqual(check('app/Sources/ForetypeEngine/ModelStore.swift', 'let session = URLSession.shared\n'), [])
 })
 
+test('a network or clipboard API inside string interpolation or after a raw string still fails', () => {
+  assert.deepEqual(check('app/Sources/ForetypeMac/A.swift', 'let s = "\\(URLSession.shared)"\n'), ['1 PRIV-1'])
+  assert.deepEqual(check('app/Sources/ForetypeMac/A.swift', 'let x = #"a"b"#; let s = URLSession.shared\n'), ['1 PRIV-1'])
+  assert.deepEqual(check('app/Sources/ForetypeMac/A.swift', 'let s = "\\(NSPasteboard.general)"\n'), ['1 PRIV-2'])
+})
+
 test('the clipboard fails PRIV-2 in tests too, and a telemetry SDK fails PRIV-4', () => {
   assert.deepEqual(check('app/Tests/ForetypeMacTests/A.swift', 'let board = NSPasteboard.general\n'), ['1 PRIV-2'])
   assert.deepEqual(check('app/Sources/ForetypeMac/A.swift', 'import FirebaseAnalytics\n'), ['1 PRIV-4'])

@@ -1,13 +1,14 @@
 // Source text with comments blanked and string literals masked, so brackets match and code lines count without
-// parsing. Used by check-budgets (lengths) and check-imports (identifiers outside comments and strings).
+// parsing. Used by check-budgets (lengths) and check-imports (imports outside strings, APIs outside comments).
 const CLOSERS = { '{': '}', '(': ')' }
 const STRING_FILL = '_'
 
 /**
  * `text` with comments replaced by spaces and string contents by `_`, newlines and UTF-16 offsets kept. A `'` or
- * `"` string ends at its line's end at the latest; `swift` treats `'` as code and reads `"""` blocks.
+ * `"` string ends at its line's end at the latest; `swift` treats `'` as code and reads `"""` blocks. `keepStrings`
+ * leaves string contents as they are, since Swift interpolation and raw strings can hold code.
  */
-export function maskSource(text, { swift = false } = {}) {
+export function maskSource(text, { swift = false, keepStrings = false } = {}) {
   const out = text.split('')
   const fill = (from, to, char) => {
     for (let k = from; k < Math.min(to, out.length); k++) if (out[k] !== '\n') out[k] = char
@@ -25,7 +26,7 @@ export function maskSource(text, { swift = false } = {}) {
       i = Math.max(end, i + 1)
     } else if (ch === '"' || ch === '`' || (!swift && ch === "'")) {
       const end = swift && text.startsWith('"""', i) ? endOf('"""', i + 3) : endOfQuoted(text, i)
-      fill(i, end, STRING_FILL)
+      if (!keepStrings) fill(i, end, STRING_FILL)
       i = end
     } else i++
   }
