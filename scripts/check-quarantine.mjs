@@ -15,7 +15,8 @@ const SCANNED = ['app/*.swift', 'scripts/*.test.mjs', 'site/src/*.test.ts', 'sit
 // This check and its test spell out the patterns they look for.
 const OWN_FILES = new Set(['scripts/check-quarantine.mjs', 'scripts/check-quarantine.test.mjs'])
 
-const SKIP = /\.disabled\(|\bXCTSkip\b|\b(?:it|test|describe)\.skip\b/
+// `.only` skips every other test in the file, so it counts as a skip.
+const SKIP = /\.disabled\(|\.enabled\(\s*if:\s*false\s*\)|\bXCTSkip\b|\b(?:it|test|describe)\.(?:skip|skipIf|todo|only)\b/
 const ANNOTATION = /QUARANTINE\(\s*#\d+\s*,\s*owner:\s*@[\w-]+\s*,\s*expires:\s*(\d{4}-\d{2}-\d{2})\s*\)\s*-\s*\S/
 const ANNOTATION_START = /QUARANTINE\(/
 

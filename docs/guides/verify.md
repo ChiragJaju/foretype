@@ -50,7 +50,7 @@ The tiers nest:
 | `check-imports` | an import or `Package.swift` edge outside MOD-1, MOD-2 or MOD-7, `llama` outside `LlamaEngine.swift`, a wall-clock read in Core, a network or clipboard API, a telemetry SDK |
 | `check-contracts-frozen` | a change to `Contracts/` or `Threading.swift` without a `CONTRACT-CHANGE` waiver and a `contracts.md` update |
 | `check-doc-currency` | code in `scripts/doc-currency-map.json` changed without its guide, unless `DOC-SKIP(<id>)` |
-| `check-quarantine` | a skipped test without a quarantine line, or one expired or more than 30 days out |
+| `check-quarantine` | a skipped, disabled, `todo` or `only` test without a quarantine line, or one expired or more than 30 days out |
 | `check-large-files` | a tracked file over 1 MB other than the lockfiles |
 | `check-exemplars` | a `## Copy from` file that is missing or carries a disable; the Lint job holds it to zero findings |
 
