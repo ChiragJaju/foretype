@@ -8,6 +8,9 @@ let swiftSettings: [SwiftSetting] = [.enableUpcomingFeature("ExistentialAny")]
 
 /// SwiftPM copies llama.framework next to the built binary but adds no rpath, so dyld aborts at
 /// launch without these. `@executable_path` serves `swift run`; `../Frameworks` serves Foretype.app.
+/// Each module folder holds its agent guide (AGENTS.md, and CLAUDE.md importing it), which is not a source.
+let agentGuides = ["AGENTS.md", "CLAUDE.md"]
+
 let executableLinkerSettings: [LinkerSetting] = [
     .unsafeFlags([
         "-Xlinker", "-rpath", "-Xlinker", "@executable_path",
@@ -36,26 +39,28 @@ let package = Package(
         ),
 
         // Pure Swift: value types, every seam protocol, and the suggestion logic. No AppKit.
-        .target(name: "ForetypeCore", swiftSettings: swiftSettings),
+        .target(name: "ForetypeCore", exclude: agentGuides, swiftSettings: swiftSettings),
 
         // Model engines behind `Engine`, plus the consented model download.
-        .target(name: "ForetypeEngine", dependencies: ["ForetypeCore", "llama"], swiftSettings: swiftSettings),
+        .target(name: "ForetypeEngine", dependencies: ["ForetypeCore", "llama"], exclude: agentGuides, swiftSettings: swiftSettings),
 
         // AppKit, Accessibility and CGEvent adapters that implement the Core seams.
-        .target(name: "ForetypeMac", dependencies: ["ForetypeCore"], swiftSettings: swiftSettings),
+        .target(name: "ForetypeMac", dependencies: ["ForetypeCore"], exclude: agentGuides, swiftSettings: swiftSettings),
 
         // Fakes for every Core seam. Linked only by test targets.
-        .target(name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], swiftSettings: swiftSettings),
+        .target(name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], exclude: agentGuides, swiftSettings: swiftSettings),
 
         .executableTarget(
             name: "ForetypeApp",
             dependencies: ["ForetypeCore", "ForetypeEngine", "ForetypeMac"],
+            exclude: agentGuides,
             swiftSettings: swiftSettings,
             linkerSettings: executableLinkerSettings
         ),
         .executableTarget(
             name: "foretype-eval",
             dependencies: ["ForetypeCore", "ForetypeEngine"],
+            exclude: agentGuides,
             swiftSettings: swiftSettings,
             linkerSettings: executableLinkerSettings
         ),
