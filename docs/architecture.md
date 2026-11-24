@@ -99,13 +99,13 @@ Cancellation rules:
 
 | Guarantee | Where it is enforced |
 |---|---|
-| The only network call is the model download, after consent, verified by SHA-256. | `ForetypeEngine/ModelStore.swift`; `download` requires a `DownloadConsent` (`Contracts/Models.swift`), created only by the onboarding and settings download buttons. `app/scripts/privacy-check.sh` (run in CI) fails on any network API elsewhere. |
-| No analytics, crash reporting or update pings. | No dependency provides them; the same privacy check covers it. |
+| The only network call is the model download, after consent, verified by SHA-256. | `ForetypeEngine/ModelStore.swift`; `download` requires a `DownloadConsent` (`Contracts/Models.swift`), created only by the onboarding and settings download buttons. `scripts/check-imports.mjs` (Repo checks) fails on any network API elsewhere. |
+| No analytics, crash reporting or update pings. | No dependency provides them; `check-imports` fails on a known telemetry or update SDK. |
 | Secure fields and deny-listed apps are skipped before any text is read. | `FocusedField` carries no text (`Contracts/Field.swift`). `Policy.evaluate` (`Logic/Policy.swift`) runs on focus; the session emits `.track` and `.captureContext` only after `.allow`. `AXContextReader` refuses secure fields again. `FakeContextReader.readFieldIDs` lets tests prove it. |
 | No keystrokes are observed outside allowed fields. | `TapMode.off` while nothing allowed is focused (`Contracts/Keys.swift`, `ForetypeMac/KeyTap.swift`). |
 | Context is dropped when a field loses focus. | `SuggestionSession` on `.blurred`: `.track(nil)`, `.blurEngine` (KV cleared in `LlamaEngine.blur`), `.publishContext(nil)`. |
 | The debug panel shows only the current context. | `RunnerStatus.inspectedContext`, set from `.publishContext`. |
-| No clipboard use. | `InsertionMethod` has no clipboard case; `privacy-check.sh` fails on `NSPasteboard`. |
+| No clipboard use. | `InsertionMethod` has no clipboard case; `check-imports` and SwiftLint fail on `NSPasteboard`. |
 | Suggestions are capped at 24 tokens. | `SuggestionLimits.maxTokens`, `CompletionRequest.maxTokens`. |
 | Snippets are encrypted at rest. | `Logic/EncryptedSnippetStore.swift` (AES-GCM, key in the Keychain). |
 | Nothing typed or read is logged. | `Contracts/Logging.swift` rule: log IDs, lengths, timings and reasons only. |
@@ -121,13 +121,12 @@ swift build && ./scripts/test.sh      # unit tests, no permissions needed
 ./scripts/dev-sign.sh                 # once: stable self-signed identity in its own keychain
 ./scripts/bundle.sh                   # release build -> app/build/Foretype.app, signed
 ./scripts/e2e-build.sh                # XcodeGen + xcodebuild build-for-testing (needs Xcode, xcodegen)
-./scripts/privacy-check.sh
 ```
 
 - `Foretype.app` gets `llama.framework` in `Contents/Frameworks`, signed inside out with hardened runtime. The `disable-library-validation` entitlement is required: without it dyld refuses the self-signed framework ("different Team IDs").
 - The bundle is replaced by rename, never copied over, and keeps the same signing identity, so the Accessibility grant survives rebuilds.
 - No SwiftPM resources (`Bundle.module` breaks signed bundles).
-- CI (`.github/workflows/app-ci.yml`) runs the privacy check on Linux and builds and tests Core and the test-support fakes on macOS, only when `app/**` changes.
+- CI (`.github/workflows/ci.yml`) runs the import and privacy checks on Linux in Repo checks, and lints, builds and tests every target on macOS when `app/**` changes.
 
 ## For contributors: who owns what
 

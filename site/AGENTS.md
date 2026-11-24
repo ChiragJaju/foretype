@@ -26,11 +26,12 @@ Run from `site/`.
 ```sh
 npm ci
 npm run dev       # local server
-npm run lint      # oxlint
+npm run lint      # oxlint, type-aware
+npm test          # Vitest
 npm run build     # tsc -b, then vite build
 ```
 
 ## Before you finish
 
-- [ ] `npm run lint` and `npm run build` pass.
+- [ ] `npm run lint`, `npm test` and `npm run build` pass.
 - [ ] `/site-ui-verify` screenshots at 1440 and 390 px, light and dark, are in the PR (UI-6).

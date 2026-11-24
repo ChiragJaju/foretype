@@ -1,8 +1,25 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
+  "plugins": ["react", "typescript", "oxc", "jsx-a11y"],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+    // A chart bar with children is one image to assistive tech; an <img> cannot hold children.
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "max-lines-per-function": ["error", { "max": 50, "skipBlankLines": true, "skipComments": true }]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "rules": { "max-lines": ["error", { "max": 300, "skipBlankLines": false, "skipComments": true }] }
+    },
+    {
+      // A component is one function, so its budget (CODE-21) is the .tsx per-function limit; check-budgets holds other functions to 50.
+      "files": ["**/*.tsx"],
+      "rules": {
+        "max-lines": ["error", { "max": 600, "skipBlankLines": true, "skipComments": true }],
+        "max-lines-per-function": ["error", { "max": 250, "skipBlankLines": true, "skipComments": true }]
+      }
+    }
+  ]
 }

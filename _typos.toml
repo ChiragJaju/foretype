@@ -1,0 +1,7 @@
+# typos (CODE-27): spelling in code, comments and docs. Project words that are not typos go here.
+[files]
+ignore-hidden = false
+extend-exclude = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.ico", "*.woff2", "package-lock.json"]
+
+[default.extend-identifiers]
+PNGs = "PNGs"

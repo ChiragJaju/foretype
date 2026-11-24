@@ -1,5 +1,4 @@
 ---
-description: When editing the app's UI, follow the UI guideline
 paths:
   - 'app/Sources/ForetypeApp/**/*.swift'
   - 'app/Sources/ForetypeMac/GhostPanel.swift'

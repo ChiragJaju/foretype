@@ -1,6 +1,6 @@
 ---
 name: learn-from-reviews
-description: Mine recent Foretype PR reviews for corrections that recur and make each one hold next time, as a check where a tool can see it, else a rule with an id in the file that owns the topic. Opens its own PR. Run after a heavily reviewed PR merges, or every few weeks.
+description: Mine recent Foretype PR reviews for corrections that recur and make each one hold next time, as a check where a tool can see it, else a rule with an id in the file that owns the topic. Opens its own PR. Use after a heavily reviewed PR merges, or every few weeks.
 ---
 
 # Learn from reviews
@@ -50,8 +50,8 @@ theme becomes a rule only if it passes all of these:
 3. **Is a choice, not a bug.** The author picked a worse pattern that compiled
    and passed tests.
 4. **Is not already enforced.** Not caught by the compiler, SwiftLint,
-   swift-format, oxlint, `tsc`, the privacy script, a repo check or a test, and
-   not already a rule: `git grep` the key noun across `docs/guidelines/` and
+   swift-format, oxlint, `tsc`, a repo check or a test, and not already a
+   rule: `git grep` the key noun across `docs/guidelines/` and
    every `AGENTS.md` first. If a rule almost covers it, sharpen that rule.
 5. **Is checkable from a diff.** A reviewer can point at a line.
 6. **Costs less than it saves** across the next twenty PRs.

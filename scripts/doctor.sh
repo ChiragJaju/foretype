@@ -19,6 +19,10 @@ if command -v swift >/dev/null 2>&1; then ok "$(swift --version 2>&1 | head -1)"
 if command -v xcodebuild >/dev/null 2>&1; then ok "$(xcodebuild -version 2>/dev/null | head -1)"; else fix "xcodebuild missing: install Xcode 27"; fi
 if command -v swiftlint >/dev/null 2>&1; then ok "swiftlint $(swiftlint version)"; else fix "swiftlint missing: brew install swiftlint"; fi
 if command -v gitleaks >/dev/null 2>&1; then ok "gitleaks $(gitleaks version)"; else fix "gitleaks missing: brew install gitleaks"; fi
+if command -v shellcheck >/dev/null 2>&1; then ok "shellcheck $(shellcheck --version | sed -n "s/^version: //p")"; else fix "shellcheck missing: brew install shellcheck"; fi
+if command -v typos >/dev/null 2>&1; then ok "$(typos --version)"; else fix "typos missing: brew install typos-cli"; fi
+if command -v actionlint >/dev/null 2>&1; then ok "actionlint $(actionlint --version | head -1)"; else fix "actionlint missing: brew install actionlint"; fi
+if command -v zizmor >/dev/null 2>&1; then ok "$(zizmor --version)"; else fix "zizmor missing: brew install zizmor"; fi
 
 hooks="$(git -C "$ROOT" config core.hooksPath)"
 if [ "$hooks" = ".githooks" ]; then ok "git hooks: .githooks"; else fix "git hooks not active: git config core.hooksPath .githooks"; fi

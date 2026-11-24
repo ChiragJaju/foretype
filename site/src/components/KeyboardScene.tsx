@@ -1,8 +1,7 @@
 import { Line, RoundedBox } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ComponentRef } from 'react'
 import * as THREE from 'three'
-import type { Line2 } from 'three-stdlib'
 import { glyphTexture } from '../lib/glyph'
 import { useTheme } from '../lib/theme'
 
@@ -56,7 +55,7 @@ function Keyboard({ palette, onWord }: { palette: Palette; onWord: (word: string
   const group = useRef<THREE.Group>(null)
   const keys = useRef<Record<string, THREE.Group | null>>({})
   const halos = useRef<Record<string, THREE.Mesh | null>>({})
-  const trail = useRef<Line2>(null)
+  const trail = useRef<ComponentRef<typeof Line>>(null)
   const clock = useRef({ word: 0, elapsed: 0, lastReported: -1 })
   const curves = useMemo(() => WORDS.map(wordCurve), [])
   const samples = useMemo(() => curves.map((curve) => curve.getSpacedPoints(PATH_SAMPLES)), [curves])

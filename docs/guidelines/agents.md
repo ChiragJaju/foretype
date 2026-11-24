@@ -42,6 +42,11 @@ Edit the source; the mirror follows.
 its `name` (the folder name) and a `description`.** Longer detail goes in a file
 beside it.
 
+**AGENTS-15. Agent files follow their tool's format.** `AGENTS.md`,
+`CLAUDE.md`, `.claude/rules/*.md`, `.claude/settings.json` and each `SKILL.md`
+use only the front-matter keys their tool reads, and every file path they cite
+resolves from the file's folder or the repo root.
+
 ## 3. Working a change
 
 **AGENTS-8. One task per worktree, on a lowercase branch cut from a freshly
@@ -66,3 +71,11 @@ The tags are listed in `CONTRIBUTING.md` § Waivers.
 **AGENTS-13. A correction that recurs in review becomes a rule.** It gets an id
 in the file that owns its topic and, where a tool can see it, a check, through
 `/learn-from-reviews`, in its own PR.
+
+**AGENTS-14. A file a `## Copy from` table names exists and is a clean model.**
+Agents copy it, so it carries no lint or type-check disable and passes SwiftLint
+or oxlint with no findings.
+
+**AGENTS-16. No tracked file is over 1 MB, except the npm lockfiles.** Images,
+recordings and models stay out of git; a model is downloaded and pinned
+(SEC-7).

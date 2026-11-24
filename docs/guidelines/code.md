@@ -64,6 +64,13 @@ Cyclomatic complexity stays at 12 or below.
 its unit in the name or the type (`requeryDebounce: Duration`,
 `THEME_REVEAL_MS`).
 
+**CODE-27. Words are spelled right in code, comments and docs.** A project word
+the spell checker does not know goes in `_typos.toml`, never a misspelling.
+
+**CODE-28. Every promise is awaited, returned or handled.** A rejection that
+is expected gets a handler with a one-line comment saying why nothing else
+happens; a bare `void` or an unhandled `.then` is not handling it.
+
 ## 3. Comments
 
 **CODE-13. A comment MUST be one or two lines saying what code can't.** An
@@ -127,3 +134,10 @@ around.
 
 **CODE-26. Your own diff MUST be swept for unused code, dead imports and stale
 docs before review.** Anything the change made dead is deleted in it.
+
+## 8. Shell scripts
+
+**CODE-29. Shell scripts quote their expansions, check what can fail and stay
+POSIX under `#!/bin/sh`.** The hooks and `app/scripts/` run on every
+contributor's machine, so a word-splitting or unset-variable bug breaks them
+for everyone.

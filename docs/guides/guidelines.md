@@ -41,8 +41,8 @@ Each rule is enforced by a check, or a note says why a reviewer does
   ["AGENTS-1", "DOC-1"]
   ```
 
-- **An outside tool** (SwiftLint, swift-format, the compiler, the privacy
-  script, `tsc`, commitlint, gitleaks) maps its own rule names to ids in
+- **An outside tool** (SwiftLint, swift-format, the compiler, `tsc`, oxlint,
+  knip, typos, shellcheck, actionlint, zizmor, agnix, commitlint, gitleaks) maps its own rule names to ids in
   `docs/guidelines/tool-enforcement.json`:
 
   ```json

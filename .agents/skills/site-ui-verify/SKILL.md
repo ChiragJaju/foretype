@@ -29,8 +29,9 @@ or footer: use the first or last section as the sibling.
 ## 3. Capture
 
 `playwright-core` is a site dev dependency; it drives the installed Chrome
-(`channel: 'chrome'`). Without Chrome, run `npx playwright-core install
-chromium` once and drop the `channel` option.
+(`channel: 'chrome'`). Without Chrome, run
+`npx --no-install playwright-core install chromium` once and drop the
+`channel` option.
 
 Run from `site/`, with `SECTIONS` set to the two indexes and `OUT` to a folder
 outside the repo (screenshots are never committed, AGENTS-11):
@@ -89,6 +90,12 @@ Open every image (Read the PNGs) and check, at both widths and in both themes:
   lucide, no emoji (UI-1, UI-2);
 - with reduced motion the section is in its settled state (SITE-5);
 - every claim it makes is true of the app (SITE-1).
+
+For a deeper pass on demand (a new section, a form, a control), review the
+changed components against Vercel's Web Interface Guidelines
+(https://github.com/vercel-labs/web-interface-guidelines): keyboard and focus,
+hit targets, input sizes, motion, dark-mode color scheme. It is a review aid,
+not a gate.
 
 Fix what is wrong and capture again. Stop the preview server when done.
 

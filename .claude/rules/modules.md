@@ -1,5 +1,4 @@
 ---
-description: When editing the package manifest, the frozen contracts or the threading primitives, follow the module rules
 paths:
   - 'app/Package.swift'
   - 'app/Sources/ForetypeCore/Contracts/**'

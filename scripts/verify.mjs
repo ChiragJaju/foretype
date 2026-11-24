@@ -1,21 +1,32 @@
 #!/usr/bin/env node
 // The one local runner of the CI checks: `node scripts/verify.mjs [--tier repo|fast|full] [--changed] [--list]`.
-// Tiers nest: repo (scripts/check-*.mjs, node tests, privacy grep) < fast (+ lint) < full (+ type-check, build, tests).
+// Tiers nest: repo (scripts/check-*.mjs, node tests, repo linters) < fast (+ Swift and site lint) < full (+ type-check,
+// build, tests).
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { changedFiles, resolveBase } from './lib/changed-lines.mjs'
+import { listFiles } from './lib/guidelines.mjs'
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TIERS = ['repo', 'fast', 'full']
-const BASE_BRANCH = 'origin/main'
 const SWIFT_PATHS = ['app/Sources', 'app/Tests', 'app/E2E', 'app/Package.swift']
-const FORMATTED_PATHS = ['site/src', 'scripts']
 const SWIFT_FILE = /^app\/.*\.swift$/
-const FORMATTED_FILE = /^(site\/src|scripts)\/.*\.(js|mjs|ts|tsx|css|json)$/
+const FORMATTED_SITE_FILE = /^site\/src\/.*\.(js|mjs|ts|tsx|css|json)$/
+const FORMATTED_SCRIPT_FILE = /^scripts\/.*\.(js|mjs|json)$/
 const LINTED_SITE_FILE = /^site\/src\/.*\.(ts|tsx)$/
+const SITE_FILE = /^site\//
+const SHELL_FILE = /\.sh$|^\.githooks\//
+const WORKFLOW_FILE = /^\.github\/workflows\/[^/]+\.ya?ml$/
+const AGENT_FILE = /(?:^|\/)(?:AGENTS|CLAUDE|SKILL)\.md$|^\.claude\//
+const ANY_FILE = /./
 const USAGE = 'usage: node scripts/verify.mjs [--tier repo|fast|full] [--changed] [--list]'
 const USAGE_EXIT_CODE = 2
+// npm tools run from node_modules/.bin under the step's cwd (the root or site/), which skips npx's startup.
+const NPM_BIN_DIR = 'node_modules/.bin/'
+const npmBin = (tool) => `${NPM_BIN_DIR}${tool}`
 
 /** The parsed flags, or null when the tier is not one of TIERS. */
 function parseArgs(argv) {
@@ -25,20 +36,7 @@ function parseArgs(argv) {
   return { tier, changed: argv.includes('--changed'), list: argv.includes('--list') }
 }
 
-function git(...args) {
-  const run = spawnSync('git', args, { cwd: ROOT, encoding: 'utf8' })
-  if (run.status !== 0) throw new Error(`git ${args.join(' ')} failed: ${run.stderr.trim()}`)
-  return run.stdout.trim()
-}
-
-/** Files changed against the merge base with origin/main, working tree included. */
-function changedFiles() {
-  const base = git('merge-base', BASE_BRANCH, 'HEAD')
-  const files = git('diff', '--name-only', '--diff-filter=ACMR', base).split('\n').filter(Boolean)
-  return { base, files }
-}
-
-function repoChecks() {
+function repoChecks(files) {
   const scriptsDir = resolve(ROOT, 'scripts')
   const names = readdirSync(scriptsDir).filter((name) => /^check-.+\.mjs$/.test(name) && !name.endsWith('.test.mjs'))
   const checks = names.map((name) => {
@@ -49,8 +47,7 @@ function repoChecks() {
   })
   const tests = readdirSync(scriptsDir).filter((name) => name.endsWith('.test.mjs'))
   if (tests.length > 0) checks.push({ label: 'node tests', argv: ['node', '--test', ...tests.map((name) => `scripts/${name}`)] })
-  checks.push({ label: 'privacy check', argv: ['app/scripts/privacy-check.sh'] })
-  return checks
+  return [...checks, ...repoLintSteps(files)]
 }
 
 /** One lint step over the changed files of a kind, or over all of them when not --changed. */
@@ -59,6 +56,31 @@ function scoped(label, argvForAll, argvForFiles, files, pattern) {
   const matching = files.filter((file) => pattern.test(file))
   if (matching.length === 0) return { label, skip: 'no changed files' }
   return { label, argv: argvForFiles(matching) }
+}
+
+/** Fast linters over repo files; each runs only when a file of its kind changed. */
+function repoLintSteps(files) {
+  const shellFiles = listFiles(ROOT, ['*.sh', '.githooks/*']).filter((file) => SHELL_FILE.test(file))
+  return [
+    scoped('shellcheck', ['shellcheck', ...shellFiles], (paths) => ['shellcheck', ...paths], files, SHELL_FILE),
+    scoped('typos', ['typos'], (paths) => ['typos', '--force-exclude', '--', ...paths], files, ANY_FILE),
+    scoped('actionlint', ['actionlint'], (paths) => ['actionlint', ...paths], files, WORKFLOW_FILE),
+    scoped(
+      'zizmor',
+      ['zizmor', '--offline', '--quiet', '.github/workflows'],
+      (paths) => ['zizmor', '--offline', '--quiet', ...paths],
+      files,
+      WORKFLOW_FILE,
+    ),
+    scoped('agnix', [npmBin('agnix'), '--strict', '.'], (paths) => [npmBin('agnix'), '--strict', ...paths], files, AGENT_FILE),
+    scoped(
+      'oxfmt scripts',
+      [npmBin('oxfmt'), '--check', 'scripts'],
+      (paths) => [npmBin('oxfmt'), '--check', ...paths],
+      files,
+      FORMATTED_SCRIPT_FILE,
+    ),
+  ]
 }
 
 function lintSteps(files) {
@@ -79,30 +101,33 @@ function lintSteps(files) {
       SWIFT_FILE,
     ),
     scoped(
-      'oxfmt',
-      ['npx', '--no-install', 'oxfmt', '--check', ...FORMATTED_PATHS],
-      (paths) => ['npx', '--no-install', 'oxfmt', '--check', ...paths],
+      'oxfmt site',
+      [npmBin('oxfmt'), '--check', 'site/src'],
+      (paths) => [npmBin('oxfmt'), '--check', ...paths],
       files,
-      FORMATTED_FILE,
+      FORMATTED_SITE_FILE,
     ),
     {
       ...scoped(
         'oxlint',
-        ['npx', '--no-install', 'oxlint'],
-        (paths) => ['npx', '--no-install', 'oxlint', ...siteRelative(paths)],
+        [npmBin('oxlint'), '--type-aware', '--deny-warnings'],
+        (paths) => [npmBin('oxlint'), '--type-aware', '--deny-warnings', ...siteRelative(paths)],
         files,
         LINTED_SITE_FILE,
       ),
       cwd: 'site',
     },
+    // knip reads the whole site graph, so any site change runs it on all of it.
+    { ...scoped('knip', [npmBin('knip')], () => [npmBin('knip')], files, SITE_FILE), cwd: 'site' },
   ]
 }
 
 function fullSteps() {
   return [
-    { label: 'site type-check', argv: ['npx', '--no-install', 'tsc', '-b'], cwd: 'site' },
+    { label: 'site type-check', argv: [npmBin('tsc'), '-b'], cwd: 'site' },
     { label: 'swift build', argv: ['swift', 'build'], cwd: 'app' },
     { label: 'app unit tests', argv: ['app/scripts/test.sh'] },
+    { label: 'site unit tests', argv: ['npm', 'test'], cwd: 'site' },
   ]
 }
 
@@ -114,7 +139,8 @@ function runStep(step, env) {
   }
   console.log(`\n▸ ${step.label}: ${step.argv.join(' ')}`)
   const run = spawnSync(step.argv[0], step.argv.slice(1), { cwd: resolve(ROOT, step.cwd ?? '.'), env, stdio: 'inherit' })
-  if (run.error) console.log(`  could not start ${step.argv[0]}: ${run.error.message}; run make doctor`)
+  const setup = step.argv[0].startsWith(NPM_BIN_DIR) ? 'make bootstrap' : 'make doctor'
+  if (run.error) console.log(`  could not start ${step.argv[0]}: ${run.error.message}; run ${setup}`)
   return run.status === 0 ? 'pass' : 'FAIL'
 }
 
@@ -124,11 +150,16 @@ function main() {
     console.log(USAGE)
     return USAGE_EXIT_CODE
   }
-  const scope = args.changed ? changedFiles() : null
+  const base = args.changed ? resolveBase(ROOT) : null
+  if (args.changed && !base) {
+    console.log('verify: no base to compare with; set VERIFY_BASE or fetch origin/main, or run without --changed')
+    return 1
+  }
+  const scope = base ? { base, files: changedFiles(ROOT, base) } : null
   const env = scope ? { ...process.env, VERIFY_BASE: scope.base } : process.env
   const depth = TIERS.indexOf(args.tier)
-  const steps = [...repoChecks(), ...(depth >= 1 ? lintSteps(scope?.files) : []), ...(depth >= 2 ? fullSteps() : [])]
-  const where = scope ? `${scope.files.length} changed files vs ${BASE_BRANCH}@${scope.base.slice(0, 7)}` : 'whole repo'
+  const steps = [...repoChecks(scope?.files), ...(depth >= 1 ? lintSteps(scope?.files) : []), ...(depth >= 2 ? fullSteps() : [])]
+  const where = scope ? `${scope.files.length} changed files vs ${scope.base.slice(0, 7)}` : 'whole repo'
   console.log(`verify · tier ${args.tier} · ${where}`)
   if (args.list) {
     for (const step of steps) console.log(`  ${step.label}: ${step.skip ?? step.argv.join(' ')}${step.cwd ? ` (in ${step.cwd}/)` : ''}`)

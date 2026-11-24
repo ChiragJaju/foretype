@@ -9,7 +9,7 @@ Four slices build in parallel, each in its own git worktree, against the frozen 
 3. Frozen means: no renames, removals or signature changes to any `public` declaration in a shared file, or to the frozen entry points listed per slice below. Additive public API in your own files is fine (for example an extra initializer that injects a key). If you need a contract change (a new case, a new field, a new fake), stop and write the request (what, why, who else it touches) to the orchestrator. Do not work around a contract with a cast or a side channel.
 4. Code against the protocols and the fakes in `ForetypeTestSupport`, never against another slice's concrete type. The only place concrete types meet is `ForetypeApp/AppComposition.swift` (slice D).
 5. No new package dependencies. Ask first.
-6. Privacy: no network call outside `ModelStore.swift`, no clipboard, no logging of field text, screen text, snippets or keystrokes. `scripts/privacy-check.sh` must pass.
+6. Privacy: no network call outside `ModelStore.swift`, no clipboard, no logging of field text, screen text, snippets or keystrokes. `node ../scripts/check-imports.mjs` must pass.
 7. Placeholders in the scaffold return safe empty values. Replace them; do not leave a placeholder in a file you shipped.
 8. Run only your own tests while working: `./scripts/test.sh --filter <YourTestTarget>`. Swift Testing for unit tests. A test pins a named risk and asserts an outcome, never that a fake was called for its own sake.
 9. Conventional Commits, small. Finish on a committed branch; the orchestrator merges.
@@ -98,7 +98,7 @@ Must deliver:
 ```sh
 cd app
 ./scripts/test.sh --filter <YourTestTarget>
-./scripts/privacy-check.sh
+node ../scripts/check-imports.mjs
 swift build
 ```
 

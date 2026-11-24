@@ -48,7 +48,8 @@ test per criterion. Share it; do not commit it (AGENTS-11).
 ## 5. Tests first
 
 Write the tests for the criteria and run them; each fails for the reason you
-expect. For a bug, the test reproduces it and fails on the current code
+expect. Extend the test that already covers a behavior instead of adding a
+parallel one, and add a test only for a named risk (TEST-9). For a bug, the test reproduces it and fails on the current code
 (TEST-7). Change a test only if the criterion changed.
 
 ```sh

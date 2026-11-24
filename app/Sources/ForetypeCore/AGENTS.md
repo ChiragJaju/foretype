@@ -35,7 +35,7 @@ engine call.** Only a mismatch asks the engine again, after
 | --- | --- |
 | A seam protocol and its documentation | `Contracts/Seams.swift` |
 | A value type with a named budget | `Contracts/Context.swift` (`ContextBudget`) |
-| A seam with a production and a test implementation | `Contracts/Clock.swift` with `ForetypeTestSupport/ManualClock.swift` |
+| A seam with a production and a test implementation | `Contracts/Clock.swift` with `../ForetypeTestSupport/ManualClock.swift` |
 
 ## Commands
 

@@ -34,13 +34,6 @@
       "target dependencies": ["MOD-2"]
     }
   },
-  "privacy-check": {
-    "runsIn": "Repo checks and app CI: `app/scripts/privacy-check.sh`",
-    "rules": {
-      "network API outside ModelStore.swift": ["PRIV-1"],
-      "clipboard API": ["PRIV-2"]
-    }
-  },
   "tsc": {
     "runsIn": "Type-check: `npm run build` in `site/` (`tsc -b`)",
     "rules": {
@@ -58,6 +51,55 @@
     "runsIn": "the pre-commit hook and CI, over the tree and every PR commit",
     "rules": {
       "default rules": ["SEC-8"]
+    }
+  },
+  "oxlint": {
+    "runsIn": "Lint: `npm run lint` in `site/` (`oxlint --type-aware --deny-warnings`, `.oxlintrc.json`); staged site files in the pre-commit hook, without type information",
+    "rules": {
+      "max-lines": ["CODE-18", "CODE-19"],
+      "max-lines-per-function": ["CODE-20", "CODE-21"],
+      "no-floating-promises": ["CODE-28"],
+      "no-misused-promises": ["CODE-28"],
+      "jsx-a11y": ["UI-4"]
+    }
+  },
+  "knip": {
+    "runsIn": "Lint: `npx knip` in `site/` (`knip.jsonc`); `make verify` when the site changed",
+    "rules": {
+      "unused files, exports and dependencies": ["CODE-4", "CODE-26"]
+    }
+  },
+  "typos": {
+    "runsIn": "Repo checks (`verify.mjs`), on staged files in the pre-commit hook, with `_typos.toml`",
+    "rules": {
+      "spelling": ["CODE-27"]
+    }
+  },
+  "shellcheck": {
+    "runsIn": "Repo checks (`verify.mjs`) on every `*.sh` and `.githooks/*`; staged ones in the pre-commit hook",
+    "rules": {
+      "all checks": ["CODE-29"]
+    }
+  },
+  "actionlint": {
+    "runsIn": "Repo checks (`verify.mjs`); the pre-commit hook when a workflow is staged",
+    "rules": {
+      "expression": ["SEC-9"]
+    }
+  },
+  "zizmor": {
+    "runsIn": "Repo checks (`verify.mjs`, `--offline`); the pre-commit hook when a workflow is staged",
+    "rules": {
+      "unpinned-uses": ["SEC-9"],
+      "artipacked": ["SEC-9"],
+      "template-injection": ["SEC-9"],
+      "excessive-permissions": ["SEC-9"]
+    }
+  },
+  "agnix": {
+    "runsIn": "Repo checks (`verify.mjs`, `--strict`); the pre-commit hook when an agent file is staged",
+    "rules": {
+      "front matter and file references": ["AGENTS-15"]
     }
   }
 }

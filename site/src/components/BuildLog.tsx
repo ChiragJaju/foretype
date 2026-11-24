@@ -130,11 +130,10 @@ function MilestoneCards({ milestones }: { milestones: Milestone[] }) {
       <ol
         ref={row.ref}
         onScroll={row.onScroll}
-        tabIndex={0}
         aria-label="Milestones, oldest to newest"
         data-lenis-prevent-horizontal
         style={{ maskImage: mask, WebkitMaskImage: mask }}
-        className="-mx-3 -my-3 flex snap-x snap-mandatory scroll-px-3 gap-4 overflow-x-auto overscroll-x-contain px-3 py-3 [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent [&::-webkit-scrollbar]:hidden"
+        className="-mx-3 -my-3 flex snap-x snap-mandatory scroll-px-3 gap-4 overflow-x-auto overscroll-x-contain px-3 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {milestones.map((milestone, index) => (
           <MilestoneCard key={milestone.title} milestone={milestone} step={index + 1} />

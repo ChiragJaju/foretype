@@ -1,0 +1,5 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema-jsonc.json",
+  // The /site-ui-verify skill drives Chrome through playwright-core from a throwaway script, so no file imports it.
+  "ignoreDependencies": ["playwright-core"]
+}

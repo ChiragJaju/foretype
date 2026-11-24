@@ -1,5 +1,4 @@
 ---
-description: When editing source code anywhere in the repo, follow the code guideline
 paths:
   - 'app/**/*.swift'
   - 'site/src/**/*.{ts,tsx}'
