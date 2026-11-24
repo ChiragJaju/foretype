@@ -21,6 +21,7 @@ let package = Package(
     products: [
         .library(name: "ForetypeCore", targets: ["ForetypeCore"]),
         .library(name: "ForetypeEngine", targets: ["ForetypeEngine"]),
+        .library(name: "ForetypeMac", targets: ["ForetypeMac"]),
         .library(name: "ForetypeTestSupport", targets: ["ForetypeTestSupport"]),
         .executable(name: "foretype-eval", targets: ["foretype-eval"]),
     ],
@@ -39,6 +40,9 @@ let package = Package(
         // Model engines behind `Engine`, plus the consented model download.
         .target(name: "ForetypeEngine", dependencies: ["ForetypeCore", "llama"], swiftSettings: swiftSettings),
 
+        // AppKit, Accessibility and CGEvent adapters that implement the Core seams.
+        .target(name: "ForetypeMac", dependencies: ["ForetypeCore"], swiftSettings: swiftSettings),
+
         // Fakes for every Core seam. Linked only by test targets.
         .target(name: "ForetypeTestSupport", dependencies: ["ForetypeCore"], swiftSettings: swiftSettings),
 
@@ -52,5 +56,6 @@ let package = Package(
         .testTarget(name: "ForetypeCoreTests", dependencies: ["ForetypeCore", "ForetypeTestSupport"], swiftSettings: swiftSettings),
         .testTarget(name: "ForetypeTestSupportTests", dependencies: ["ForetypeTestSupport"], swiftSettings: swiftSettings),
         .testTarget(name: "ForetypeEngineTests", dependencies: ["ForetypeEngine", "ForetypeTestSupport"], swiftSettings: swiftSettings),
+        .testTarget(name: "ForetypeMacTests", dependencies: ["ForetypeMac", "ForetypeTestSupport"], swiftSettings: swiftSettings),
     ]
 )
